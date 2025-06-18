@@ -350,54 +350,117 @@ class MurderPDFGenerator:
         return '<br/>'.join(lines)
 
     def format_analysis_text(self, analysis_text: str, styles) -> list:
-        """Format analysis text into paragraphs"""
+        """Format analysis text into structured paragraphs with proper sub-sections"""
         paragraphs = []
 
-        # Clean the text
+        if not analysis_text:
+            return paragraphs
+
+        # Define the expected sub-sections with patterns
+        section_patterns = [
+            ("1. Comprehensive Analysis of the Case", "1."),
+            ("2. Potential Motives and Suspects to Consider", "2."),
+            ("3. Recommended Investigative Approaches", "3."),
+            ("4. Key Evidence to Focus On and Analysis", "4."),
+            ("5. Possible Solutions or Conclusions", "5.")
+        ]
+
+        # Split text into sections using regex-like approach
+        import re
+
+        # Clean the text first
         clean_text = self.clean_markdown_text(analysis_text)
 
-        # Split by double newlines to get sections
-        sections = clean_text.split('\n\n')
+        # Split by numbered sections
+        sections = []
+        current_section = ""
+        current_title = ""
 
-        for section in sections:
-            section = section.strip()
-            if not section:
+        lines = clean_text.split('\n')
+
+        for line in lines:
+            line = line.strip()
+            if not line:
                 continue
 
-            # Check if this looks like a header
-            if (section.startswith('**') and section.endswith('**')) or section.isupper():
-                header_text = section.replace('**', '').strip()
-                paragraphs.append(Paragraph(header_text, styles['section_header']))
-            else:
-                paragraphs.append(Paragraph(section, styles['analysis_text']))
+            # Skip unwanted headers
+            if '[LIVE DATA ANALYSIS]' in line or line.startswith('Case Analysis:'):
+                continue
+
+            # Check if this is a section header
+            is_section_header = False
+            for full_title, pattern in section_patterns:
+                if (pattern in line and ("Comprehensive Analysis" in line or
+                                       "Potential Motives" in line or
+                                       "Recommended Investigative" in line or
+                                       "Key Evidence" in line or
+                                       "Possible Solutions" in line)):
+                    is_section_header = True
+
+                    # Save previous section if exists
+                    if current_title and current_section:
+                        sections.append((current_title, current_section.strip()))
+
+                    # Start new section
+                    current_title = line.replace('**', '').strip()
+                    current_section = ""
+                    break
+
+            if not is_section_header and current_title:
+                # Add content to current section
+                clean_line = line.replace('**', '').replace('*', '').strip()
+                if clean_line:
+                    current_section += clean_line + " "
+
+        # Add the last section
+        if current_title and current_section:
+            sections.append((current_title, current_section.strip()))
+
+        # Convert sections to paragraphs
+        for title, content in sections:
+            if title and content:
+                # Add section header
+                paragraphs.append(Paragraph(title, styles['sub_header']))
+                paragraphs.append(Spacer(1, 6))
+
+                # Format content with bullet points
+                formatted_content = content.replace('- ', '\n• ')
+                if formatted_content.startswith('\n'):
+                    formatted_content = formatted_content[1:]
+
+                # Add content paragraph
+                paragraphs.append(Paragraph(formatted_content, styles['analysis_text']))
+                paragraphs.append(Spacer(1, 12))
 
         return paragraphs
 
     def clean_markdown_text(self, text: str) -> str:
-        """Clean markdown formatting from text"""
+        """Clean markdown formatting from text while preserving structure"""
         if not text:
             return ""
 
         clean_text = str(text).strip()
 
-        # Remove markdown formatting
-        clean_text = clean_text.replace('**', '')
-        clean_text = clean_text.replace('*', '')
-        clean_text = clean_text.replace('__', '')
-        clean_text = clean_text.replace('_', '')
+        # Remove specific unwanted headers but preserve structure
+        clean_text = clean_text.replace('[LIVE DATA ANALYSIS]', '')
+
+        # Remove excessive markdown formatting but keep basic structure
         clean_text = clean_text.replace('###', '')
         clean_text = clean_text.replace('##', '')
         clean_text = clean_text.replace('#', '')
-        clean_text = clean_text.replace('- ', '')
-        clean_text = clean_text.replace('+ ', '')
 
-        # Remove [LIVE DATA ANALYSIS] headers
-        clean_text = clean_text.replace('[LIVE DATA ANALYSIS]', '')
+        # Preserve line breaks for section parsing
+        # Don't normalize all whitespace - keep line structure
+        lines = clean_text.split('\n')
+        cleaned_lines = []
+        for line in lines:
+            cleaned_line = line.strip()
+            if cleaned_line:
+                cleaned_lines.append(cleaned_line)
+            else:
+                cleaned_lines.append('')  # Preserve empty lines for section breaks
 
-        # Normalize whitespace
-        clean_text = ' '.join(clean_text.split())
-
-        return clean_text
+        return '\n'.join(cleaned_lines)
 
     def create_murder_styles(self):
         """Create professional styles for murder investigation PDFs"""
@@ -422,13 +485,26 @@ class MurderPDFGenerator:
                 textColor=colors.HexColor('#8b0000'),
                 fontName='Helvetica-Bold'
             ),
+            'sub_header': ParagraphStyle(
+                'SubHeader',
+                parent=styles['Heading3'],
+                fontSize=12,
+                spaceAfter=8,
+                spaceBefore=15,
+                textColor=colors.HexColor('#2c3e50'),
+                fontName='Helvetica-Bold',
+                leftIndent=0,
+                bulletIndent=0
+            ),
             'analysis_text': ParagraphStyle(
                 'AnalysisText',
                 parent=styles['Normal'],
                 fontSize=11,
-                spaceAfter=6,
+                spaceAfter=8,
+                spaceBefore=4,
                 alignment=TA_JUSTIFY,
-                fontName='Helvetica'
+                fontName='Helvetica',
+                leftIndent=0
             ),
             'footer': ParagraphStyle(
                 'Footer',

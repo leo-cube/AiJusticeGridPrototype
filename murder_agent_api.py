@@ -163,20 +163,24 @@ class MurderPDFGenerator:
             story.append(Paragraph("HOMICIDE INVESTIGATION REPORT", styles['title']))
             story.append(Spacer(1, 20))
 
-            # Header information
+            # Header information with proper paragraph formatting
             header_data = [
-                ['Case ID:', case_data.get('case_id', 'N/A')],
-                ['Date Generated:', datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
-                ['Investigation Date:', case_data.get('date_of_crime', 'N/A')]
+                [self.create_table_cell_paragraph('Case ID:', styles, bold=True),
+                 self.create_table_cell_paragraph(case_data.get('case_id', 'N/A'), styles, bold=False)],
+                [self.create_table_cell_paragraph('Date Generated:', styles, bold=True),
+                 self.create_table_cell_paragraph(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), styles, bold=False)],
+                [self.create_table_cell_paragraph('Investigation Date:', styles, bold=True),
+                 self.create_table_cell_paragraph(case_data.get('date_of_crime', 'N/A'), styles, bold=False)]
             ]
 
-            header_table = Table(header_data, colWidths=[1.5*inch, 5*inch])
+            header_table = Table(header_data, colWidths=[1.8*inch, 4.7*inch])
             header_table.setStyle(TableStyle([
-                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, -1), 10),
                 ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
                 ('TOPPADDING', (0, 0), (-1, -1), 6),
+                ('LEFTPADDING', (0, 0), (-1, -1), 6),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 6),
                 ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+                ('ALIGN', (1, 0), (1, -1), 'LEFT'),
                 ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ]))
             story.append(header_table)
@@ -188,16 +192,19 @@ class MurderPDFGenerator:
                 story.append(Paragraph("CASE DETAILS", styles['section_header']))
                 story.append(Spacer(1, 10))
 
-                case_table = Table(case_details, colWidths=[2*inch, 4.5*inch])
+                # Adjust column widths for better text wrapping
+                case_table = Table(case_details, colWidths=[2.2*inch, 4.3*inch])
                 case_table.setStyle(TableStyle([
-                    ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-                    ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
-                    ('FONTSIZE', (0, 0), (-1, -1), 10),
-                    ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-                    ('TOPPADDING', (0, 0), (-1, -1), 6),
+                    # Remove font settings since we're using Paragraph objects now
+                    ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                    ('TOPPADDING', (0, 0), (-1, -1), 8),
+                    ('LEFTPADDING', (0, 0), (-1, -1), 6),
+                    ('RIGHTPADDING', (0, 0), (-1, -1), 6),
                     ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+                    ('ALIGN', (1, 0), (1, -1), 'LEFT'),
                     ('VALIGN', (0, 0), (-1, -1), 'TOP'),
                     ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                    ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f5f5f5')),
                 ]))
                 story.append(case_table)
                 story.append(Spacer(1, 20))
@@ -240,8 +247,9 @@ class MurderPDFGenerator:
             return buffer
 
     def format_case_details(self, case_data: Dict[str, Any]) -> list:
-        """Format case details for the PDF"""
+        """Format case details for the PDF with proper text wrapping"""
         details = []
+        styles = self.create_murder_styles()
 
         field_mapping = [
             ('date_of_crime', 'Date of Crime:'),
@@ -263,9 +271,83 @@ class MurderPDFGenerator:
             if data_key in case_data and case_data[data_key]:
                 value = str(case_data[data_key]).strip()
                 if value and value.lower() not in ['n/a', 'none', 'unknown', '']:
-                    details.append([display_name, value])
+                    # Format long text for better display in tables
+                    if len(value) > 80:  # For longer text, add strategic breaks
+                        formatted_value = self.format_long_text_for_table(value, max_length=80)
+                    else:
+                        formatted_value = value
+
+                    # Create paragraphs for proper text wrapping
+                    label_paragraph = self.create_table_cell_paragraph(display_name, styles, bold=True)
+                    value_paragraph = self.create_table_cell_paragraph(formatted_value, styles, bold=False)
+                    details.append([label_paragraph, value_paragraph])
 
         return details
+
+    def create_table_cell_paragraph(self, text: str, styles: dict, bold: bool = False) -> Paragraph:
+        """Create a paragraph for table cell with proper wrapping"""
+        # Ensure text is properly escaped and cleaned
+        clean_text = str(text).strip()
+
+        # Create a style for table cells with better wrapping
+        if bold:
+            cell_style = ParagraphStyle(
+                'TableCellBold',
+                parent=styles['analysis_text'],
+                fontSize=10,
+                fontName='Helvetica-Bold',
+                alignment=TA_LEFT,
+                spaceAfter=2,
+                spaceBefore=2,
+                leftIndent=0,
+                rightIndent=0,
+                wordWrap='LTR',  # Enable word wrapping
+                allowWidows=1,   # Allow single lines at page breaks
+                allowOrphans=1   # Allow single lines at page breaks
+            )
+        else:
+            cell_style = ParagraphStyle(
+                'TableCell',
+                parent=styles['analysis_text'],
+                fontSize=10,
+                fontName='Helvetica',
+                alignment=TA_LEFT,
+                spaceAfter=2,
+                spaceBefore=2,
+                leftIndent=0,
+                rightIndent=0,
+                wordWrap='LTR',  # Enable word wrapping
+                allowWidows=1,   # Allow single lines at page breaks
+                allowOrphans=1   # Allow single lines at page breaks
+            )
+
+        return Paragraph(clean_text, cell_style)
+
+    def format_long_text_for_table(self, text: str, max_length: int = 100) -> str:
+        """Format long text for better table display by adding strategic line breaks"""
+        if not text or len(text) <= max_length:
+            return text
+
+        # Split long text into smaller chunks at natural break points
+        words = text.split()
+        lines = []
+        current_line = []
+        current_length = 0
+
+        for word in words:
+            if current_length + len(word) + 1 <= max_length:
+                current_line.append(word)
+                current_length += len(word) + 1
+            else:
+                if current_line:
+                    lines.append(' '.join(current_line))
+                current_line = [word]
+                current_length = len(word)
+
+        if current_line:
+            lines.append(' '.join(current_line))
+
+        return '<br/>'.join(lines)
 
     def format_analysis_text(self, analysis_text: str, styles) -> list:
         """Format analysis text into paragraphs"""

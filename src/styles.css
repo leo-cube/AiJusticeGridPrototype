@@ -136,7 +136,60 @@ body {
     50% { opacity: 0.5; }
 }
 
-/* Chat Container */
+/* Dual Agent Container */
+.dual-agent-container {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding: 1rem;
+    min-height: calc(100vh - 80px);
+}
+
+/* Agent Panel Styles */
+.agent-panel {
+    background: rgba(30, 41, 59, 0.4);
+    border-radius: 16px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.murder-panel {
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.cyber-panel {
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Agent Header */
+.agent-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+    background: rgba(15, 23, 42, 0.6);
+}
+
+.agent-header h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #f8fafc;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.murder-panel .agent-header h2 i {
+    color: #ef4444;
+}
+
+.cyber-panel .agent-header h2 i {
+    color: #10b981;
+}
+
+/* Chat Container - Updated for dual layout */
 .chat-container {
     flex: 1;
     display: flex;
@@ -150,10 +203,18 @@ body {
     background: rgba(30, 41, 59, 0.4);
     border-radius: 16px;
     border: 1px solid rgba(59, 130, 246, 0.2);
-    padding: 2rem;
+    padding: 1.5rem;
     overflow-y: auto;
-    max-height: 60vh;
+    max-height: 40vh;
     backdrop-filter: blur(10px);
+}
+
+/* Agent panel chat messages - smaller for dual layout */
+.agent-panel .chat-messages {
+    padding: 1rem;
+    max-height: 35vh;
+    border: none;
+    background: transparent;
 }
 
 /* Welcome Message */
@@ -165,17 +226,21 @@ body {
 }
 
 .agent-avatar {
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: white;
     flex-shrink: 0;
     box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+}
+
+.cyber-avatar {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
 }
 
 .welcome-content h2 {
@@ -185,20 +250,27 @@ body {
     color: #f8fafc;
 }
 
+.welcome-content h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #f8fafc;
+}
+
 .welcome-content p {
-    font-size: 1rem;
+    font-size: 0.875rem;
     color: #cbd5e1;
-    line-height: 1.6;
-    margin-bottom: 2rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
 }
 
 .start-btn {
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: white;
     border: none;
-    padding: 0.875rem 2rem;
-    border-radius: 12px;
-    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
     display: flex;
@@ -206,6 +278,11 @@ body {
     gap: 0.5rem;
     transition: all 0.3s ease;
     box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+}
+
+.cyber-start {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3) !important;
 }
 
 .start-btn:hover {
@@ -596,5 +673,278 @@ body {
     .modal-content {
         width: 95%;
         margin: 1rem;
+    }
+
+    /* Dual agent responsive */
+    .dual-agent-container {
+        grid-template-columns: 1fr;
+        padding: 0.5rem;
+    }
+
+    .agent-header h2 {
+        font-size: 1rem;
+    }
+
+    .agent-panel .chat-messages {
+        max-height: 30vh;
+    }
+}
+
+/* Tablet responsive for dual agents */
+@media (max-width: 1024px) {
+    .dual-agent-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .agent-panel {
+        min-height: 45vh;
+    }
+
+    .agent-panel .chat-messages {
+        max-height: 35vh;
+    }
+}
+
+/* Agent Selection Styles */
+.agent-selection-container {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 80px);
+}
+
+.selection-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.selection-header h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #3b82f6, #10b981);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.selection-header p {
+    font-size: 1.125rem;
+    color: #94a3b8;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.agent-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    width: 100%;
+}
+
+.agent-card {
+    background: rgba(30, 41, 59, 0.4);
+    border-radius: 20px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.agent-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #3b82f6, #10b981);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.agent-card:hover::before {
+    opacity: 1;
+}
+
+.agent-card:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.murder-card {
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.murder-card::before {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.murder-card:hover {
+    border-color: rgba(239, 68, 68, 0.5);
+}
+
+.cyber-card {
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.cyber-card::before {
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.cyber-card:hover {
+    border-color: rgba(16, 185, 129, 0.5);
+}
+
+.agent-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.agent-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.murder-icon {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.cyber-icon {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.agent-card-header h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #f8fafc;
+    margin: 0;
+}
+
+.agent-card-content p {
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.agent-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+}
+
+.agent-features li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #cbd5e1;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+}
+
+.agent-features i {
+    color: #10b981;
+    font-size: 0.75rem;
+}
+
+.agent-card-footer {
+    margin-top: auto;
+}
+
+.agent-btn {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: white;
+}
+
+.murder-btn {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.murder-btn:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: translateY(-2px);
+}
+
+.cyber-btn {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.cyber-btn:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-2px);
+}
+
+/* Back Button Styles */
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    color: #3b82f6;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.5);
+    transform: translateX(-2px);
+}
+
+/* Responsive Design for Agent Selection */
+@media (max-width: 768px) {
+    .agent-selection-container {
+        padding: 1rem;
+    }
+
+    .selection-header h2 {
+        font-size: 2rem;
+    }
+
+    .agent-cards {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .agent-card {
+        padding: 1.5rem;
+    }
+
+    .back-btn span {
+        display: none;
     }
 }

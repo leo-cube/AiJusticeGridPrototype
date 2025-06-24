@@ -1,21 +1,21 @@
-// Global variables
-let sessionId = null;
-let currentStep = 0;
-let totalSteps = 14;
-let isWaitingForResponse = false;
+// Global variables for murder agent
+let murderSessionId = null;
+let murderCurrentStep = 0;
+let murderTotalSteps = 14;
+let murderIsWaitingForResponse = false;
 
-// API Configuration
+// API Configuration - Updated for unified server
 // const API_BASE_URL = 'https://aijusticegrid-1.onrender.com';
-const API_BASE_URL = 'http://localhost:5001';
+const API_BASE_URL = 'http://localhost:9000';
 
-// http://localhost:5001
+// Updated endpoint for unified server
 const API_ENDPOINT = `${API_BASE_URL}/api/murder`;
 
 // Session management
 const SESSION_KEY = 'aiJusticeGrid_session';
 
-// Step names for progress tracking
-const stepNames = [
+// Step names for progress tracking - murder agent
+const murderStepNames = [
     'Case ID',
     'Date of Crime',
     'Time of Crime',
@@ -62,7 +62,7 @@ function setupEventListeners() {
     // Auto-resize input and enable/disable send button
     messageInput.addEventListener('input', function() {
         const hasText = this.value.trim().length > 0;
-        sendBtn.disabled = !hasText || isWaitingForResponse;
+        sendBtn.disabled = !hasText || murderIsWaitingForResponse;
     });
 }
 
@@ -109,12 +109,17 @@ async function startInvestigation() {
         const data = await response.json();
 
         if (data.success) {
-            sessionId = data.session_id;
+            murderSessionId = data.session_id;
 
             // Hide welcome message and show chat interface
-            document.querySelector('.welcome-message').style.display = 'none';
-            document.getElementById('progressSection').style.display = 'block';
-            document.getElementById('inputSection').style.display = 'block';
+            const welcomeMsg = document.querySelector('#chatMessages .welcome-message');
+            if (welcomeMsg) welcomeMsg.style.display = 'none';
+
+            const progressSection = document.getElementById('progressSection');
+            const inputSection = document.getElementById('inputSection');
+
+            if (progressSection) progressSection.style.display = 'block';
+            if (inputSection) inputSection.style.display = 'block';
 
             // Add agent's first message
             addMessage('agent', data.data.analysis);
@@ -123,7 +128,8 @@ async function startInvestigation() {
             updateProgress();
 
             // Focus on input
-            document.getElementById('messageInput').focus();
+            const messageInput = document.getElementById('messageInput');
+            if (messageInput) messageInput.focus();
         } else {
             throw new Error(data.error || 'Failed to start investigation');
         }
@@ -140,15 +146,16 @@ async function sendMessage() {
     const messageInput = document.getElementById('messageInput');
     const message = messageInput.value.trim();
 
-    if (!message || isWaitingForResponse) return;
+    if (!message || murderIsWaitingForResponse) return;
 
     // Add user message to chat
     addMessage('user', message);
 
     // Clear input and disable send button
     messageInput.value = '';
-    document.getElementById('sendBtn').disabled = true;
-    isWaitingForResponse = true;
+    const sendBtn = document.getElementById('sendBtn');
+    if (sendBtn) sendBtn.disabled = true;
+    murderIsWaitingForResponse = true;
 
     showLoading(true);
 
@@ -160,7 +167,7 @@ async function sendMessage() {
             },
             body: JSON.stringify({
                 question: message,
-                session_id: sessionId
+                session_id: murderSessionId
             })
         });
 
@@ -172,17 +179,20 @@ async function sendMessage() {
 
             // Update progress if still collecting info
             if (data.data.is_collecting_info) {
-                currentStep++;
+                murderCurrentStep++;
                 updateProgress();
             } else {
                 // Investigation complete
-                currentStep = totalSteps;
+                murderCurrentStep = murderTotalSteps;
                 updateProgress();
-                document.getElementById('currentStepInfo').innerHTML =
-                    '<i class="fas fa-check-circle"></i><span>Investigation Complete</span>';
+                const currentStepInfo = document.getElementById('currentStepInfo');
+                if (currentStepInfo) {
+                    currentStepInfo.innerHTML = '<i class="fas fa-check-circle"></i><span>Investigation Complete</span>';
+                }
 
                 // Show download button
-                document.getElementById('downloadBtn').style.display = 'flex';
+                const downloadBtn = document.getElementById('downloadBtn');
+                if (downloadBtn) downloadBtn.style.display = 'flex';
             }
         } else {
             throw new Error(data.error || 'Failed to send message');
@@ -192,8 +202,9 @@ async function sendMessage() {
         addMessage('agent', 'Sorry, I encountered an error processing your message. Please try again.');
     } finally {
         showLoading(false);
-        isWaitingForResponse = false;
-        messageInput.focus();
+        murderIsWaitingForResponse = false;
+        const messageInput = document.getElementById('messageInput');
+        if (messageInput) messageInput.focus();
     }
 }
 
@@ -245,14 +256,16 @@ function updateProgress() {
     const progressText = document.getElementById('progressText');
     const currentStepInfo = document.getElementById('currentStepInfo');
 
-    const percentage = (currentStep / totalSteps) * 100;
-    progressFill.style.width = `${percentage}%`;
-    progressText.textContent = `${currentStep}/${totalSteps} Steps Completed`;
+    if (progressFill && progressText && currentStepInfo) {
+        const percentage = (murderCurrentStep / murderTotalSteps) * 100;
+        progressFill.style.width = `${percentage}%`;
+        progressText.textContent = `${murderCurrentStep}/${murderTotalSteps} Steps Completed`;
 
-    if (currentStep < totalSteps) {
-        const stepName = stepNames[currentStep] || 'Unknown Step';
-        currentStepInfo.innerHTML =
-            `<i class="fas fa-clipboard-list"></i><span>Current: ${stepName}</span>`;
+        if (murderCurrentStep < murderTotalSteps) {
+            const stepName = murderStepNames[murderCurrentStep] || 'Unknown Step';
+            currentStepInfo.innerHTML =
+                `<i class="fas fa-clipboard-list"></i><span>Current: ${stepName}</span>`;
+        }
     }
 }
 
@@ -277,9 +290,9 @@ async function resetConversation() {
 
             if (data.success) {
                 // Reset variables
-                sessionId = data.session_id;
-                currentStep = 0;
-                isWaitingForResponse = false;
+                murderSessionId = data.session_id;
+                murderCurrentStep = 0;
+                murderIsWaitingForResponse = false;
 
                 // Clear chat messages
                 const chatMessages = document.getElementById('chatMessages');
@@ -337,7 +350,7 @@ document.getElementById('helpModal').addEventListener('click', function(e) {
 
 // Download PDF report
 async function downloadPDF() {
-    if (!sessionId) {
+    if (!murderSessionId) {
         alert('No active session found. Please complete an investigation first.');
         return;
     }
@@ -351,7 +364,7 @@ async function downloadPDF() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                session_id: sessionId
+                session_id: murderSessionId
             })
         });
 
@@ -453,6 +466,13 @@ function logout() {
     if (confirm('Are you sure you want to logout? Any unsaved progress will be lost.')) {
         clearSession();
         window.location.href = 'login.html';
+    }
+}
+
+// Navigation function
+function goBack() {
+    if (confirm('Are you sure you want to go back? Any unsaved progress will be lost.')) {
+        window.location.href = 'index.html';
     }
 }
 

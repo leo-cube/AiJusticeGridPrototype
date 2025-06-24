@@ -1,21 +1,21 @@
-// Global variables
-let sessionId = null;
-let currentStep = 0;
-let totalSteps = 14;
-let isWaitingForResponse = false;
+// Global variables for cyber agent
+let cyberSessionId = null;
+let cyberCurrentStep = 0;
+let cyberTotalSteps = 14;
+let cyberIsWaitingForResponse = false;
 
-// API Configuration
+// API Configuration - Updated for unified server
 // const API_BASE_URL = 'https://aijusticegrid-1.onrender.com';
-const API_BASE_URL = 'http://localhost:5002';
+const API_BASE_URL = 'http://localhost:9000';
 
-// http://localhost:5001
+// Updated endpoint for unified server
 const API_ENDPOINT = `${API_BASE_URL}/api/cyber`;
 
 // Session management
 const SESSION_KEY = 'aiJusticeGrid_session';
 
-// Step names for progress tracking
-const stepNames = [
+// Step names for progress tracking - cyber agent
+const cyberStepNames = [
     'Case ID',
     'Date of Crime',
     'Who Involved',
@@ -46,24 +46,26 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
 });
 
-// Setup event listeners
+// Setup event listeners for cyber agent
 function setupEventListeners() {
-    const messageInput = document.getElementById('messageInput');
-    const sendBtn = document.getElementById('sendBtn');
+    const messageInput = document.getElementById('cyberMessageInput');
+    const sendBtn = document.getElementById('cyberSendBtn');
 
-    // Enter key to send message
-    messageInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
+    if (messageInput && sendBtn) {
+        // Enter key to send message
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage_cyber();
+            }
+        });
 
-    // Auto-resize input and enable/disable send button
-    messageInput.addEventListener('input', function() {
-        const hasText = this.value.trim().length > 0;
-        sendBtn.disabled = !hasText || isWaitingForResponse;
-    });
+        // Auto-resize input and enable/disable send button
+        messageInput.addEventListener('input', function() {
+            const hasText = this.value.trim().length > 0;
+            sendBtn.disabled = !hasText || cyberIsWaitingForResponse;
+        });
+    }
 }
 
 // Check server status
@@ -81,20 +83,26 @@ async function checkServerStatus() {
     }
 }
 
-// Update connection status
+// Update connection status (cyber-specific)
 function updateStatus(status, text) {
+    // For cyber agent, we'll use the same status elements as murder
+    // since they share the same header, but we'll make it cyber-aware
     const statusDot = document.getElementById('statusDot');
     const statusText = document.getElementById('statusText');
 
-    statusDot.className = `status-dot ${status}`;
-    statusText.textContent = text;
+    if (statusDot && statusText) {
+        statusDot.className = `status-dot ${status}`;
+        statusText.textContent = text;
+    }
 }
 
 // Start investigation
 async function startInvestigation_cyber() {
+    console.log('Starting cyber investigation...');
     showLoading(true);
 
     try {
+        console.log('Making API request to:', API_ENDPOINT);
         const response = await fetch(API_ENDPOINT, {
             method: 'POST',
             headers: {
@@ -106,15 +114,39 @@ async function startInvestigation_cyber() {
             })
         });
 
+        console.log('API response status:', response.status);
         const data = await response.json();
+        console.log('API response data:', data);
 
         if (data.success) {
-            sessionId = data.session_id;
+            cyberSessionId = data.session_id;
+            console.log('Cyber session ID:', cyberSessionId);
 
             // Hide welcome message and show chat interface
-            document.querySelector('.welcome-message').style.display = 'none';
-            document.getElementById('progressSection').style.display = 'block';
-            document.getElementById('inputSection').style.display = 'block';
+            const welcomeMsg = document.querySelector('#cyberChatMessages .welcome-message');
+            if (welcomeMsg) {
+                welcomeMsg.style.display = 'none';
+                console.log('Welcome message hidden');
+            } else {
+                console.error('Welcome message not found');
+            }
+
+            const progressSection = document.getElementById('cyberProgressSection');
+            const inputSection = document.getElementById('cyberInputSection');
+
+            if (progressSection) {
+                progressSection.style.display = 'block';
+                console.log('Progress section shown');
+            } else {
+                console.error('Progress section not found');
+            }
+
+            if (inputSection) {
+                inputSection.style.display = 'block';
+                console.log('Input section shown');
+            } else {
+                console.error('Input section not found');
+            }
 
             // Add agent's first message
             addMessage('agent', data.data.analysis);
@@ -123,7 +155,13 @@ async function startInvestigation_cyber() {
             updateProgress();
 
             // Focus on input
-            document.getElementById('messageInput').focus();
+            const messageInput = document.getElementById('cyberMessageInput');
+            if (messageInput) {
+                messageInput.focus();
+                console.log('Input focused');
+            } else {
+                console.error('Message input not found');
+            }
         } else {
             throw new Error(data.error || 'Failed to start investigation');
         }
@@ -137,18 +175,19 @@ async function startInvestigation_cyber() {
 
 // Send message
 async function sendMessage_cyber() {
-    const messageInput = document.getElementById('messageInput');
+    const messageInput = document.getElementById('cyberMessageInput');
     const message = messageInput.value.trim();
 
-    if (!message || isWaitingForResponse) return;
+    if (!message || cyberIsWaitingForResponse) return;
 
     // Add user message to chat
     addMessage('user', message);
 
     // Clear input and disable send button
     messageInput.value = '';
-    document.getElementById('sendBtn').disabled = true;
-    isWaitingForResponse = true;
+    const sendBtn = document.getElementById('cyberSendBtn');
+    if (sendBtn) sendBtn.disabled = true;
+    cyberIsWaitingForResponse = true;
 
     showLoading(true);
 
@@ -160,7 +199,7 @@ async function sendMessage_cyber() {
             },
             body: JSON.stringify({
                 question: message,
-                session_id: sessionId
+                session_id: cyberSessionId
             })
         });
 
@@ -172,17 +211,20 @@ async function sendMessage_cyber() {
 
             // Update progress if still collecting info
             if (data.data.is_collecting_info) {
-                currentStep++;
+                cyberCurrentStep++;
                 updateProgress();
             } else {
                 // Investigation complete
-                currentStep = totalSteps;
+                cyberCurrentStep = cyberTotalSteps;
                 updateProgress();
-                document.getElementById('currentStepInfo').innerHTML =
-                    '<i class="fas fa-check-circle"></i><span>Investigation Complete</span>';
+                const currentStepInfo = document.getElementById('cyberCurrentStepInfo');
+                if (currentStepInfo) {
+                    currentStepInfo.innerHTML = '<i class="fas fa-check-circle"></i><span>Investigation Complete</span>';
+                }
 
                 // Show download button
-                document.getElementById('downloadBtn').style.display = 'flex';
+                const downloadBtn = document.getElementById('cyberDownloadBtn');
+                if (downloadBtn) downloadBtn.style.display = 'flex';
             }
         } else {
             throw new Error(data.error || 'Failed to send message');
@@ -192,21 +234,27 @@ async function sendMessage_cyber() {
         addMessage('agent', 'Sorry, I encountered an error processing your message. Please try again.');
     } finally {
         showLoading(false);
-        isWaitingForResponse = false;
-        messageInput.focus();
+        cyberIsWaitingForResponse = false;
+        const messageInput = document.getElementById('cyberMessageInput');
+        if (messageInput) messageInput.focus();
     }
 }
 
-// Add message to chat
+// Add message to chat (cyber-specific)
 function addMessage(sender, content) {
-    const chatMessages = document.getElementById('chatMessages');
+    const chatMessages = document.getElementById('cyberChatMessages');
+
+    if (!chatMessages) {
+        console.error('cyberChatMessages element not found');
+        return;
+    }
 
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${sender}`;
 
     const avatar = document.createElement('div');
     avatar.className = 'message-avatar';
-    avatar.innerHTML = sender === 'agent' ? '<i class="fas fa-user-secret"></i>' : '<i class="fas fa-user"></i>';
+    avatar.innerHTML = sender === 'agent' ? '<i class="fas fa-laptop-code"></i>' : '<i class="fas fa-user"></i>';
 
     const messageContent = document.createElement('div');
     messageContent.className = 'message-content';
@@ -224,7 +272,7 @@ function addMessage(sender, content) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Format message content
+// Format message content (cyber-specific)
 function formatMessageContent(content) {
     // Convert **text** to bold
     content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -232,27 +280,35 @@ function formatMessageContent(content) {
     // Convert line breaks
     content = content.replace(/\n/g, '<br>');
 
-    // Highlight [LIVE DATA ANALYSIS] header
+    // Highlight [LIVE DATA ANALYSIS] header for cyber
     content = content.replace(/\[LIVE DATA ANALYSIS\]/g,
-        '<span style="color: #3b82f6; font-weight: 600;">[LIVE DATA ANALYSIS]</span>');
+        '<span style="color: #10b981; font-weight: 600;">[CYBER ANALYSIS]</span>');
 
     return content;
 }
 
-// Update progress
+// Update progress (cyber-specific)
 function updateProgress() {
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
-    const currentStepInfo = document.getElementById('currentStepInfo');
+    const progressFill = document.getElementById('cyberProgressFill');
+    const progressText = document.getElementById('cyberProgressText');
+    const currentStepInfo = document.getElementById('cyberCurrentStepInfo');
 
-    const percentage = (currentStep / totalSteps) * 100;
-    progressFill.style.width = `${percentage}%`;
-    progressText.textContent = `${currentStep}/${totalSteps} Steps Completed`;
+    if (progressFill && progressText && currentStepInfo) {
+        const percentage = (cyberCurrentStep / cyberTotalSteps) * 100;
+        progressFill.style.width = `${percentage}%`;
+        progressText.textContent = `${cyberCurrentStep}/${cyberTotalSteps} Steps Completed`;
 
-    if (currentStep < totalSteps) {
-        const stepName = stepNames[currentStep] || 'Unknown Step';
-        currentStepInfo.innerHTML =
-            `<i class="fas fa-clipboard-list"></i><span>Current: ${stepName}</span>`;
+        if (cyberCurrentStep < cyberTotalSteps) {
+            const stepName = cyberStepNames[cyberCurrentStep] || 'Unknown Step';
+            currentStepInfo.innerHTML =
+                `<i class="fas fa-laptop-code"></i><span>Current: ${stepName}</span>`;
+        }
+    } else {
+        console.error('Cyber progress elements not found:', {
+            progressFill: !!progressFill,
+            progressText: !!progressText,
+            currentStepInfo: !!currentStepInfo
+        });
     }
 }
 
@@ -277,12 +333,12 @@ async function resetConversation_cyber() {
 
             if (data.success) {
                 // Reset variables
-                sessionId = data.session_id;
-                currentStep = 0;
-                isWaitingForResponse = false;
+                cyberSessionId = data.session_id;
+                cyberCurrentStep = 0;
+                cyberIsWaitingForResponse = false;
 
                 // Clear chat messages
-                const chatMessages = document.getElementById('chatMessages');
+                const chatMessages = document.getElementById('cyberChatMessages');
                 chatMessages.innerHTML = '';
 
                 // Add agent's first message
@@ -292,14 +348,17 @@ async function resetConversation_cyber() {
                 updateProgress();
 
                 // Clear input
-                document.getElementById('messageInput').value = '';
-                document.getElementById('sendBtn').disabled = true;
+                const messageInput = document.getElementById('cyberMessageInput');
+                if (messageInput) messageInput.value = '';
+                const sendBtn = document.getElementById('cyberSendBtn');
+                if (sendBtn) sendBtn.disabled = true;
 
                 // Hide download button
-                document.getElementById('downloadBtn').style.display = 'none';
+                const downloadBtn = document.getElementById('cyberDownloadBtn');
+                if (downloadBtn) downloadBtn.style.display = 'none';
 
                 // Focus on input
-                document.getElementById('messageInput').focus();
+                if (messageInput) messageInput.focus();
             } else {
                 throw new Error(data.error || 'Failed to reset conversation');
             }
@@ -337,7 +396,7 @@ document.getElementById('helpModal').addEventListener('click', function(e) {
 
 // Download PDF report
 async function downloadPDF_cyber() {
-    if (!sessionId) {
+    if (!cyberSessionId) {
         alert('No active session found. Please complete an investigation first.');
         return;
     }
@@ -351,7 +410,7 @@ async function downloadPDF_cyber() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                session_id: sessionId
+                session_id: cyberSessionId
             })
         });
 
@@ -453,6 +512,13 @@ function logout() {
     if (confirm('Are you sure you want to logout? Any unsaved progress will be lost.')) {
         clearSession();
         window.location.href = 'login.html';
+    }
+}
+
+// Navigation function
+function goBack() {
+    if (confirm('Are you sure you want to go back? Any unsaved progress will be lost.')) {
+        window.location.href = 'index.html';
     }
 }
 

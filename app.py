@@ -636,7 +636,8 @@ class MurderAgent:
                 "max_tokens": 2000
             }
 
-            response = requests.post(self.nvidia_api_url, headers=headers, json=payload)
+            # Add timeout to prevent lag
+            response = requests.post(self.nvidia_api_url, headers=headers, json=payload, timeout=30)
             response.raise_for_status()
 
             result = response.json()
@@ -956,13 +957,10 @@ async def download_murder_pdf(request: PDFDownloadRequest):
             }
         )
 
+# This file is now used as a module in the unified server
+# To run the unified server, use: python run-new.py
 if __name__ == "__main__":
-    import uvicorn
-    logger.info("Starting Murder Agent API server on port 5001")
-    uvicorn.run(
-        "app:app",
-        host="0.0.0.0",
-        port=5001,
-        reload=True,
-        log_level="info"
-    )
+    print("⚠️  This file is now part of the unified server system.")
+    print("🚀 To start both agents, run: python run-new.py")
+    print("🌐 Unified Server: http://localhost:9000")
+    print("📚 API Documentation: http://localhost:9000/docs")

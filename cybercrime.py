@@ -624,7 +624,7 @@ class CybercrimeAgent:
                 "messages": [
                     {
                         "role": "system",
-                        "content": "You are a specialized AI assistant for crybercrime investigations. Provide detailed, professional analysis of crybercrime cases with comprehensive insights on motives, asset_affected, evidence, and investigative approaches."
+                        "content": "You are a specialized AI assistant for cybercrime investigations. Provide detailed, professional analysis of cybercrime cases with comprehensive insights on motives, affected assets, evidence, and investigative approaches. Be concise but thorough in your analysis."
                     },
                     {
                         "role": "user",
@@ -632,10 +632,11 @@ class CybercrimeAgent:
                     }
                 ],
                 "temperature": 0.7,
-                "max_tokens": 2000
+                "max_tokens": 1500
             }
 
-            response = requests.post(self.nvidia_api_url, headers=headers, json=payload)
+            # Add timeout to prevent lag
+            response = requests.post(self.nvidia_api_url, headers=headers, json=payload, timeout=30)
             response.raise_for_status()
 
             result = response.json()
@@ -964,13 +965,10 @@ async def download_cybercrime_pdf(request: PDFDownloadRequest):
             }
         )
 
+# This file is now used as a module in the unified server
+# To run the unified server, use: python run-new.py
 if __name__ == "__main__":
-    import uvicorn
-    logger.info("Starting Cybercrime Agent API server on port 5001")
-    uvicorn.run(
-        "app:app",
-        host="0.0.0.0",
-        port=5001,
-        reload=True,
-        log_level="info"
-    )
+    print("⚠️  This file is now part of the unified server system.")
+    print("🚀 To start both agents, run: python run-new.py")
+    print("🌐 Unified Server: http://localhost:9000")
+    print("📚 API Documentation: http://localhost:9000/docs")

@@ -39,7 +39,7 @@
 
         <!-- Main Chat Interface -->
         <main class="chat-container">
-            <!-- Chat Messages Area - Murder-->
+            <!-- Chat Messages Area -->
             <div class="chat-messages" id="chatMessages">
                 <div class="welcome-message">
                     <div class="agent-avatar">
@@ -93,9 +93,14 @@
                         <i class="fas fa-download"></i>
                         Download PDF Report
                     </button>
+                    <button class="action-btn help-btn" onclick="showHelp()">
+                        <i class="fas fa-question-circle"></i>
+                        Help
+                    </button>
                 </div>
             </div>
         </main>
+
         <!-- Loading Overlay -->
         <div class="loading-overlay" id="loadingOverlay">
             <div class="loading-content">
@@ -103,9 +108,51 @@
                 <p>Analyzing case data...</p>
             </div>
         </div>
+
+        <!-- Help Modal -->
+        <div class="modal-overlay" id="helpModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Investigation Process Guide</h3>
+                    <button class="close-btn" onclick="closeHelp()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="help-section">
+                        <h4>Case Information Collection</h4>
+                        <p>The investigation follows a structured 14-step process:</p>
+                        <ol>
+                            <li>Case ID</li>
+                            <li>Date of Crime</li>
+                            <li>Time of Crime</li>
+                            <li>Location</li>
+                            <li>Victim Name</li>
+                            <li>Victim Age</li>
+                            <li>Victim Gender</li>
+                            <li>Cause of Death</li>
+                            <li>Weapon Used</li>
+                            <li>Crime Scene Description</li>
+                            <li>Witnesses</li>
+                            <li>Evidence Found</li>
+                            <li>Suspects</li>
+                            <li>Additional Notes</li>
+                        </ol>
+                    </div>
+                    <div class="help-section">
+                        <h4>Tips for Best Results</h4>
+                        <ul>
+                            <li>Provide detailed and accurate information</li>
+                            <li>Use specific dates and times when possible</li>
+                            <li>Include all relevant details about evidence</li>
+                            <li>Be thorough in witness descriptions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
-    <script src="script-cyber.js"></script>
 </body>
 </html>

@@ -693,7 +693,7 @@ Analyze the following cybercrime case and provide a comprehensive investigation 
 Case ID: {case_details.get('case_id', 'N/A')}
 Date of Crime: {case_details.get('date_of_crime', 'N/A')}
 Who Involved: {case_details.get('who_involved', 'N/A')}
-Damage Description:: {case_details.get('Damage Description:', 'N/A')}
+Damage Description: {case_details.get('Damage Description:', 'N/A')}
 Suspect Name: {case_details.get('suspect_name', 'N/A')}
 Suspect Identity: {case_details.get('suspect_identity', 'N/A')}
 Suspect Motive: {case_details.get('suspect_motive', 'N/A')}
@@ -701,7 +701,7 @@ Affected Assets: {case_details.get('affected_assets', 'N/A')}
 Evidence Found: {case_details.get('evidence', 'N/A')}
 Crime Scene Description: {case_details.get('evidence_collection', 'N/A')}
 Timeline of Events: {case_details.get('timeline_intrusion', 'N/A')}
-Evidence Found: {case_details.get('type_of_crime', 'N/A')}
+Crime Type: {case_details.get('type_of_crime', 'N/A')}
 Asset Affected: {case_details.get('asset_affected', 'N/A')}
 Cyber Forensic Notes: {case_details.get('cyber_forensic', 'N/A')}
 

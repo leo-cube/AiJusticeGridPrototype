@@ -445,6 +445,27 @@ body {
     color: #64748b;
 }
 
+#cyberMessageInput {
+    flex: 1;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(71, 85, 105, 0.5);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    color: #f8fafc;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#cyberMessageInput:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+#cyberMessageInput::placeholder {
+    color: #64748b;
+}
+
 .send-btn {
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: white;

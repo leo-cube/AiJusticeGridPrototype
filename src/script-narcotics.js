@@ -1,15 +1,15 @@
 // Global variables for cyber agent
-let cyberSessionId = null;
+let NarcoticsSessionId = null;
 let cyberCurrentStep = 0;
 let cyberTotalSteps = 14;
-let cyberIsWaitingForResponse = false;
+let NarcoticsIsWaitingForResponse = false;
 
 // API Configuration - Updated for unified server
 // const API_BASE_URL = 'https://aijusticegrid-1.onrender.com';
 const API_BASE_URL = 'http://localhost:9000';
 
 // Updated endpoint for unified server
-const API_ENDPOINT = `${API_BASE_URL}/api/cyber`;
+const API_ENDPOINT = `${API_BASE_URL}/api/narcotics`;
 
 // Session management
 const SESSION_KEY = 'aiJusticeGrid_session';
@@ -17,19 +17,19 @@ const SESSION_KEY = 'aiJusticeGrid_session';
 // Step names for progress tracking - cyber agent
 const cyberStepNames = [
     'Case ID',
-    'Date of Crime',
-    'Who Involved',
-    'Damage Description',
-    'Suspect Name',
-    'Suspect Identity',
-    'Suspect Motive',
-    'Affected Assets',
-    'Evidence Found',
-    'Crime Scene Description',
-    'Timeline of Events',
-    'Crime Type',
-    'Asset Affected',
-    'Cyber Forensic Notes'
+    'Type Of Substance',
+    'Drugs Acquired',
+    'Identified Individuals',
+    'Trafficker Identity',
+    'Supply Chain',
+    'Concealment',
+    'Evidence Trafficking',
+    'Tx Type',
+    'Informant Details',
+    'Controlled delivery',
+    'Forensic Evidence',
+    'Penalty Type',
+    'International Links'
 ];
 
 // Initialize the application
@@ -46,10 +46,15 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
 });
 
+// Navigation function to go back to agent selection
+function goBack() {
+    window.location.href = 'index.html';
+}
+
 // Setup event listeners for cyber agent
 function setupEventListeners() {
-    const messageInput = document.getElementById('cyberMessageInput');
-    const sendBtn = document.getElementById('cyberSendBtn');
+    const messageInput = document.getElementById('NarcoticMessageInput');
+    const sendBtn = document.getElementById('NarcoticSendBtn');
 
     if (messageInput && sendBtn) {
         // Enter key to send message
@@ -63,7 +68,7 @@ function setupEventListeners() {
         // Auto-resize input and enable/disable send button
         messageInput.addEventListener('input', function() {
             const hasText = this.value.trim().length > 0;
-            sendBtn.disabled = !hasText || cyberIsWaitingForResponse;
+            sendBtn.disabled = !hasText || NarcoticsIsWaitingForResponse;
         });
     }
 }
@@ -97,8 +102,8 @@ function updateStatus(status, text) {
 }
 
 // Start investigation
-async function startInvestigation_cyber() {
-    console.log('Starting cyber investigation...');
+async function startInvestigation_narcotics() {
+    console.log('Starting narcotics investigation...');
     showLoading(true);
 
     try {
@@ -119,11 +124,11 @@ async function startInvestigation_cyber() {
         console.log('API response data:', data);
 
         if (data.success) {
-            cyberSessionId = data.session_id;
-            console.log('Cyber session ID:', cyberSessionId);
+            NarcoticsSessionId = data.session_id;
+            console.log('Narcotics session ID:', NarcoticsSessionId);
 
             // Hide welcome message and show chat interface
-            const welcomeMsg = document.querySelector('#cyberChatMessages .welcome-message');
+            const welcomeMsg = document.querySelector('#chatMessages .welcome-message');
             if (welcomeMsg) {
                 welcomeMsg.style.display = 'none';
                 console.log('Welcome message hidden');
@@ -131,8 +136,8 @@ async function startInvestigation_cyber() {
                 console.error('Welcome message not found');
             }
 
-            const progressSection = document.getElementById('cyberProgressSection');
-            const inputSection = document.getElementById('cyberInputSection');
+            const progressSection = document.getElementById('narcoticsInputSection');
+            const inputSection = document.getElementById('inputSection');
 
             if (progressSection) {
                 progressSection.style.display = 'block';
@@ -155,7 +160,7 @@ async function startInvestigation_cyber() {
             updateProgress();
 
             // Focus on input
-            const messageInput = document.getElementById('cyberMessageInput');
+            const messageInput = document.getElementById('NarcoticMessageInput');
             if (messageInput) {
                 messageInput.focus();
                 console.log('Input focused');
@@ -174,20 +179,20 @@ async function startInvestigation_cyber() {
 }
 
 // Send message
-async function sendMessage_cyber() {
-    const messageInput = document.getElementById('cyberMessageInput');
+async function sendMessage_narcotics() {
+    const messageInput = document.getElementById('NarcoticMessageInput');
     const message = messageInput.value.trim();
 
-    if (!message || cyberIsWaitingForResponse) return;
+    if (!message || NarcoticsIsWaitingForResponse) return;
 
     // Add user message to chat
     addMessage('user', message);
 
     // Clear input and disable send button
     messageInput.value = '';
-    const sendBtn = document.getElementById('cyberSendBtn');
+    const sendBtn = document.getElementById('NarcoticSendBtn');
     if (sendBtn) sendBtn.disabled = true;
-    cyberIsWaitingForResponse = true;
+    NarcoticsIsWaitingForResponse = true;
 
     showLoading(true);
 
@@ -199,7 +204,7 @@ async function sendMessage_cyber() {
             },
             body: JSON.stringify({
                 question: message,
-                session_id: cyberSessionId
+                session_id: NarcoticsSessionId
             })
         });
 
@@ -211,19 +216,19 @@ async function sendMessage_cyber() {
 
             // Update progress if still collecting info
             if (data.data.is_collecting_info) {
-                cyberCurrentStep++;
+                NarcoticsCurrentStep++;
                 updateProgress();
             } else {
                 // Investigation complete
-                cyberCurrentStep = cyberTotalSteps;
+                NarcoticsCurrentStep = NarcoticsTotalSteps;
                 updateProgress();
-                const currentStepInfo = document.getElementById('cyberCurrentStepInfo');
+                const currentStepInfo = document.getElementById('NarcoticsCurrentStepInfo');
                 if (currentStepInfo) {
                     currentStepInfo.innerHTML = '<i class="fas fa-check-circle"></i><span>Investigation Complete</span>';
                 }
 
                 // Show download button
-                const downloadBtn = document.getElementById('cyberDownloadBtn');
+                const downloadBtn = document.getElementById('narcoticsDownloadBtn');
                 if (downloadBtn) downloadBtn.style.display = 'flex';
             }
         } else {
@@ -234,18 +239,18 @@ async function sendMessage_cyber() {
         addMessage('agent', 'Sorry, I encountered an error processing your message. Please try again.');
     } finally {
         showLoading(false);
-        cyberIsWaitingForResponse = false;
-        const messageInput = document.getElementById('cyberMessageInput');
+        NarcoticsIsWaitingForResponse = false;
+        const messageInput = document.getElementById('NarcoticMessageInput');
         if (messageInput) messageInput.focus();
     }
 }
 
-// Add message to chat (cyber-specific)
+// Add message to chat (narcotics-specific)
 function addMessage(sender, content) {
-    const chatMessages = document.getElementById('cyberChatMessages');
+    const chatMessages = document.getElementById('NarcoticsChatMessages');
 
     if (!chatMessages) {
-        console.error('cyberChatMessages element not found');
+        console.error('NarcoticsChatMessages element not found');
         return;
     }
 
@@ -287,19 +292,19 @@ function formatMessageContent(content) {
     return content;
 }
 
-// Update progress (cyber-specific)
+// Update progress (narcotics-specific)
 function updateProgress() {
-    const progressFill = document.getElementById('cyberProgressFill');
-    const progressText = document.getElementById('cyberProgressText');
-    const currentStepInfo = document.getElementById('cyberCurrentStepInfo');
+    const progressFill = document.getElementById('NarcoticsProgressFill');
+    const progressText = document.getElementById('NarcoticsProgressText');
+    const currentStepInfo = document.getElementById('NarcoticsCurrentStepInfo');
 
     if (progressFill && progressText && currentStepInfo) {
-        const percentage = (cyberCurrentStep / cyberTotalSteps) * 100;
+        const percentage = (NarcoticsCurrentStep / NarcoticsTotalSteps) * 100;
         progressFill.style.width = `${percentage}%`;
-        progressText.textContent = `${cyberCurrentStep}/${cyberTotalSteps} Steps Completed`;
+        progressText.textContent = `${NarcoticsCurrentStep}/${NarcoticsTotalSteps} Steps Completed`;
 
-        if (cyberCurrentStep < cyberTotalSteps) {
-            const stepName = cyberStepNames[cyberCurrentStep] || 'Unknown Step';
+        if (NarcoticsCurrentStep < NarcoticsTotalSteps) {
+            const stepName = NarcoticsStepNames[NarcoticsCurrentStep] || 'Unknown Step';
             currentStepInfo.innerHTML =
                 `<i class="fas fa-laptop-code"></i><span>Current: ${stepName}</span>`;
         }
@@ -313,7 +318,7 @@ function updateProgress() {
 }
 
 // Reset conversation
-async function resetConversation_cyber() {
+async function resetConversation_narcotics() {
     if (confirm('Are you sure you want to reset the investigation? All progress will be lost.')) {
         showLoading(true);
 
@@ -333,12 +338,12 @@ async function resetConversation_cyber() {
 
             if (data.success) {
                 // Reset variables
-                cyberSessionId = data.session_id;
-                cyberCurrentStep = 0;
-                cyberIsWaitingForResponse = false;
+                NarcoticsSessionId = data.session_id;
+                NarcoticsCurrentStep = 0;
+                NarcoticsIsWaitingForResponse = false;
 
                 // Clear chat messages
-                const chatMessages = document.getElementById('cyberChatMessages');
+                const chatMessages = document.getElementById('NarcoticsChatMessages');
                 chatMessages.innerHTML = '';
 
                 // Add agent's first message
@@ -348,13 +353,13 @@ async function resetConversation_cyber() {
                 updateProgress();
 
                 // Clear input
-                const messageInput = document.getElementById('cyberMessageInput');
+                const messageInput = document.getElementById('NarcoticMessageInput');
                 if (messageInput) messageInput.value = '';
-                const sendBtn = document.getElementById('cyberSendBtn');
+                const sendBtn = document.getElementById('NarcoticSendBtn');
                 if (sendBtn) sendBtn.disabled = true;
 
                 // Hide download button
-                const downloadBtn = document.getElementById('cyberDownloadBtn');
+                const downloadBtn = document.getElementById('narcoticsDownloadBtn');
                 if (downloadBtn) downloadBtn.style.display = 'none';
 
                 // Focus on input
@@ -395,8 +400,8 @@ document.getElementById('helpModal').addEventListener('click', function(e) {
 });
 
 // Download PDF report
-async function downloadPDF_cyber() {
-    if (!cyberSessionId) {
+async function downloadPDF_narcotics() {
+    if (!NarcoticsSessionId) {
         alert('No active session found. Please complete an investigation first.');
         return;
     }
@@ -404,20 +409,20 @@ async function downloadPDF_cyber() {
     showLoading(true);
 
     try {
-        const response = await fetch(`${API_BASE_URL}/api/cyber/download-pdf`, {
+        const response = await fetch(`${API_BASE_URL}/api/narcotics/download-pdf`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                session_id: cyberSessionId
+                session_id: NarcoticsSessionId
             })
         });
 
         if (response.ok) {
             // Get the filename from the response headers or create a default one
             const contentDisposition = response.headers.get('Content-Disposition');
-            let filename = 'Cybercrime_Investigation_Report.pdf';
+            let filename = 'Narcotics_Investigation_Report.pdf';
 
             if (contentDisposition) {
                 const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
@@ -439,7 +444,7 @@ async function downloadPDF_cyber() {
             document.body.removeChild(a);
 
             // Show success message
-            addMessage('agent', '✅ **PDF Report Downloaded Successfully!**\n\nYour comprehensive cybercrime investigation report has been downloaded to your device.');
+            addMessage('agent', '✅ **PDF Report Downloaded Successfully!**\n\nYour comprehensive narcotics investigation report has been downloaded to your device.');
 
         } else {
             const errorData = await response.json();

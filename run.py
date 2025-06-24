@@ -28,6 +28,13 @@ AGENTS = {
         "title": "Cybercrime Agent API",
         "description": "AI-powered cybercrime investigation analysis system",
         "prefix": "/api/cyber"
+    },
+    "narcotics": {
+        "app_module": "narcotics",
+        "app_name": "app",
+        "title": "Narcotics Agent API",
+        "description": "AI-powered narcotics investigation analysis system",
+        "prefix": "/api/narcotics"
     }
     # Add more agents here in the future
 }
@@ -80,6 +87,8 @@ class UnifiedAgentServer:
                     "/api/murder/download-pdf",
                     "/api/cyber",
                     "/api/cyber/download-pdf",
+                    "/api/narcotics",
+                    "/api/narcotics/download-pdf",
                     "/docs",
                     "/redoc"
                 ]
@@ -99,6 +108,10 @@ class UnifiedAgentServer:
             from cybercrime import app as cyber_app
             from cybercrime import cyber_agent_endpoint, download_cybercrime_pdf
 
+            # Import narcotics agent routes
+            from narcotics import app as narcotics_app
+            from narcotics import narcotics_agent_endpoint, download_narcotics_pdf
+
             # Add murder agent routes
             self.app.post("/api/murder")(murder_agent_endpoint)
             self.app.post("/api/murder/download-pdf")(download_murder_pdf)
@@ -106,6 +119,10 @@ class UnifiedAgentServer:
             # Add cyber agent routes
             self.app.post("/api/cyber")(cyber_agent_endpoint)
             self.app.post("/api/cyber/download-pdf")(download_cybercrime_pdf)
+
+            # Add narcotics agent routes
+            self.app.post("/api/narcotics")(narcotics_agent_endpoint)
+            self.app.post("/api/narcotics/download-pdf")(download_narcotics_pdf)
 
             logger.info("✓ Successfully included all agent routes")
 

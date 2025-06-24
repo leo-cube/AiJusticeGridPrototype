@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narcotics Investigation - AiJusticeGrid</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <i class="fas fa-shield-alt logo-icon"></i>
+                    <div class="logo-text">
+                        <h1>AiJusticeGrid</h1>
+                        <span class="subtitle">Narcotics Investigation Agent</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="back-btn" onclick="goBack()" title="Back to Agent Selection">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Back</span>
+                    </button>
+                    <div class="user-info" id="userInfo">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="userName">Loading...</span>
+                    </div>
+                    <div class="status-indicator">
+                        <div class="status-dot" id="statusDot"></div>
+                        <span id="statusText">Connecting...</span>
+                    </div>
+                    <button class="logout-btn" onclick="logout()" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Chat Interface -->
+        <main class="chat-container">
+            <!-- Chat Messages Area -->
+            <div class="chat-messages" id="NarcoticsChatMessages">
+                <div class="welcome-message">
+                    <div class="agent-avatar">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <div class="welcome-content">
+                        <h2>Welcome to Narcotics Investigation Assistant</h2>
+                        <p>I'm your specialized AI assistant for Narcotics investigations. I'll guide you through a comprehensive case analysis process.</p>
+                        <button class="start-btn" onclick="startInvestigation_narcotics()">
+                            <i class="fas fa-play"></i>
+                            Start Investigation
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div class="progress-section" id="narcoticsProgressSection" style="display: none;">
+                <div class="progress-header">
+                    <h4>Narcotics Case Progress</h4>
+                    <span class="progress-text" id="NarcoticsProgressText">0/14 Steps Completed</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="NarcoticsProgressFill"></div>
+                </div>
+                <div class="current-step" id="NarcoticsCurrentStepInfo">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Ready to begin case collection</span>
+                </div>
+            </div>
+
+            <!-- Input Section -->
+            <div class="input-section" id="inputSection" style="display: none;">
+                <div class="input-container">
+                    <input type="text" id="messageInput" placeholder="Enter murder case details...">
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage_narcotics()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="input-actions">
+                    <button class="action-btn reset-btn" onclick="resetConversation_narcotics()">
+                        <i class="fas fa-redo"></i>
+                        Reset Case
+                    </button>
+                    <button class="action-btn download-btn" id="downloadBtn" onclick="downloadPDF_narcotics()" style="display: none;">
+                        <i class="fas fa-download"></i>
+                        Download PDF Report
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <p>Analyzing case data...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script-narcotics.js"></script>
+</body>
+</html>

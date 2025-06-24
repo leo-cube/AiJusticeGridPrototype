@@ -22,6 +22,8 @@ function navigateToAgent(agentType) {
         window.location.href = 'murder.html';
     } else if (agentType === 'cyber') {
         window.location.href = 'cyber.html';
+    } else if (agentType === 'narcotics') {
+        window.location.href = 'narcotics.html';
     }
 }
 

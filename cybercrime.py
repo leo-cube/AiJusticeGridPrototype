@@ -24,8 +24,8 @@ except ImportError:
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Murder Agent API",
-    description="AI-powered murder investigation analysis system",
+    title="Cybercrime Agent API",
+    description="AI-powered cybercrime investigation analysis system",
     version="2.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
@@ -52,86 +52,86 @@ NVIDIA_API_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 CASE_INFO_STEPS = [
     {
         "id": "greeting",
-        "message": "**[LIVE DATA ANALYSIS]**\n\nHello, I'm the Murder Agent, an AI assistant specialized in homicide investigations. I'll help you analyze a murder case by collecting relevant information. Let's start with the basics. What is the Case ID for this investigation?",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nHello, I'm the Cybercrime Agent, an AI assistant specialized in Cybercrime based investigations. I'll help you analyze a Cybercrime case by collecting relevant information. Let's start with the basics. What is the Case ID for this investigation?",
         "field": "case_id",
         "next_step": "date_of_crime"
     },
     {
         "id": "date_of_crime",
-        "message": "**[LIVE DATA ANALYSIS]**\n\nThank you. When did the crime occur? Please provide the date (YYYY-MM-DD, MM/DD/YYYY, or text format like 'January 15, 2023').",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nThank you. When was the cyber incident first noticed? (Date/time it was reported)",
         "field": "date_of_crime",
-        "next_step": "time_of_crime"
+        "next_step": "who_involved"
     },
     {
-        "id": "time_of_crime",
-        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat time did the crime occur? (HH:MM format, or approximate time like '2:30 PM', 'noon', or 'evening')",
-        "field": "time_of_crime",
-        "next_step": "location"
+        "id": "who_involved",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nHow was it determined whether the attack was by an outsider or an insider user? (Method of attribution)",
+        "field": "who_involved",
+        "next_step": "Damage Description:"
     },
     {
-        "id": "location",
-        "message": "**[LIVE DATA ANALYSIS]**\n\nWhere did the crime take place? Please provide the location.",
-        "field": "location",
-        "next_step": "victim_name"
+        "id": "Damage Description:",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat is the extent of the Damage Description: or loss (e.g. data stolen, service disruption, financial impact)?",
+        "field": "Damage Description:",
+        "next_step": "suspect_name"
     },
     {
-        "id": "victim_name",
-        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat is the victim's name?",
-        "field": "victim_name",
-        "next_step": "victim_age"
+        "id": "suspect_name",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWho is the potential intruder or prime suspect? (Names or identifiers of suspect accounts or groups)",
+        "field": "suspect_name",
+        "next_step": "suspect_identity"
     },
     {
-        "id": "victim_age",
-        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat is the victim's age?",
-        "field": "victim_age",
-        "next_step": "victim_gender"
+        "id": "suspect_identity",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nOn what basis was the suspect identified? (Evidence or indicators leading to suspicion)",
+        "field": "suspect_identity",
+        "next_step": "suspect_motive"
     },
     {
-        "id": "victim_gender",
-        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat is the victim's gender?",
-        "field": "victim_gender",
-        "next_step": "cause_of_death"
+        "id": "suspect_motive",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat is the likely motive or impact on the organization’s operations? (Business disruption, financial gain, espionage)",
+        "field": "suspect_motive",
+        "next_step": "affected_assets"
     },
     {
-        "id": "cause_of_death",
-        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat was the cause of death?",
-        "field": "cause_of_death",
-        "next_step": "weapon_used"
+        "id": "affected_assets",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWhich critical systems, networks or data assets were involved or affected? (Servers, databases, user accounts)",
+        "field": "affected_assets",
+        "next_step": "evidence"
     },
     {
-        "id": "weapon_used",
-        "message": "**[LIVE DATA ANALYSIS]**\n\nWas a weapon used? If so, what kind?",
-        "field": "weapon_used",
-        "next_step": "crime_scene_description"
+        "id": "evidence",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat steps have been taken to preserve and analyze digital evidence? (Images of drives, log captures, malware samples)",
+        "field": "evidence",
+        "next_step": "evidence_collection"
     },
     {
-        "id": "crime_scene_description",
-        "message": "**[LIVE DATA ANALYSIS]**\n\nPlease describe the crime scene.",
-        "field": "crime_scene_description",
-        "next_step": "witnesses"
+        "id": "evidence_collection",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWere all devices and data collected by trained personnel, following chain-of-custody procedures? (Evidence handling protocols)",
+        "field": "evidence_collection",
+        "next_step": "timeline_intrusion"
     },
     {
-        "id": "witnesses",
-        "message": "**[LIVE DATA ANALYSIS]**\n\nWere there any witnesses? If so, please provide details.",
-        "field": "witnesses",
-        "next_step": "evidence_found"
+        "id": "timeline_intrusion",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat is the timeline of the intrusion and incident events? (Dates/times of initial compromise, discovery, and response)",
+        "field": "timeline_intrusion",
+        "next_step": "type_of_crime"
     },
     {
-        "id": "evidence_found",
-        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat evidence was found at the scene?",
-        "field": "evidence_found",
-        "next_step": "suspects"
+        "id": "type_of_crime",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat category of cybercrime is suspected (e.g. hacking, phishing, malware, ransomware, identity theft)?",
+        "field": "type_of_crime",
+        "next_step": "asset_affected"
     },
     {
-        "id": "suspects",
-        "message": "**[LIVE DATA ANALYSIS]**\n\nAre there any suspects at this time?",
-        "field": "suspects",
-        "next_step": "additional_notes"
+        "id": "asset_affected",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWhich digital assets or user accounts were targeted or compromised? (Email accounts, cloud storage, network credentials)",
+        "field": "asset_affected",
+        "next_step": "cyber_forensic"
     },
     {
-        "id": "additional_notes",
-        "message": "**[LIVE DATA ANALYSIS]**\n\nDo you have any additional notes or information about the case?",
-        "field": "additional_notes",
+        "id": "cyber_forensic",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat cyber-forensic resources or agencies have been engaged? (e.g. CERTs, cybercrime units, external labs)",
+        "field": "cyber_forensic",
         "next_step": "analysis"
     },
     {
@@ -146,22 +146,22 @@ CASE_INFO_STEPS = [
 conversation_states = {}
 
 # Pydantic Models for Request/Response validation
-class MurderAgentRequest(BaseModel):
+class CyberAgentRequest(BaseModel):
     question: str = Field(default="", description="User's question or input")
     session_id: Optional[str] = Field(default=None, description="Session ID for conversation continuity")
     force_new_session: bool = Field(default=False, description="Force creation of new session")
     forceReset: bool = Field(default=False, description="Alternative field for forcing reset")
 
-class MurderAgentData(BaseModel):
+class CyberAgentData(BaseModel):
     analysis: str = Field(description="AI analysis response")
     is_collecting_info: bool = Field(description="Whether still collecting case information")
     current_step: str = Field(description="Current step in the investigation process")
     collected_data: Dict[str, Any] = Field(default_factory=dict, description="Collected case data")
     error: Optional[str] = Field(default=None, description="Error message if any")
 
-class MurderAgentResponse(BaseModel):
+class CyberAgentResponse(BaseModel):
     success: bool = Field(description="Whether the request was successful")
-    data: MurderAgentData = Field(description="Response data")
+    data: CyberAgentData = Field(description="Response data")
     session_id: str = Field(description="Session ID")
     message: str = Field(description="Status message")
 
@@ -178,15 +178,15 @@ class ErrorResponse(BaseModel):
     error: str = Field(description="Error message")
     data: Optional[Dict[str, Any]] = Field(default=None)
 
-class MurderPDFGenerator:
-    """PDF generator for murder investigation reports"""
+class CyberPDFGenerator:
+    """PDF generator for cybercrime investigation reports"""
 
     def __init__(self):
         if not REPORTLAB_AVAILABLE:
             raise ImportError("ReportLab is required for PDF generation. Install with: pip install reportlab")
 
-    def generate_murder_pdf(self, case_data: Dict[str, Any], analysis_text: str) -> BytesIO:
-        """Generate a murder investigation PDF report"""
+    def generate_cyber_pdf(self, case_data: Dict[str, Any], analysis_text: str) -> BytesIO:
+        """Generate a cybercrime investigation PDF report"""
         buffer = BytesIO()
 
         try:
@@ -195,13 +195,13 @@ class MurderPDFGenerator:
                                    topMargin=72, bottomMargin=18)
 
             # Get custom styles
-            styles = self.create_murder_styles()
+            styles = self.create_cyber_styles()
 
             # Build the story (content)
             story = []
 
             # Title
-            story.append(Paragraph("HOMICIDE INVESTIGATION REPORT", styles['title']))
+            story.append(Paragraph("CYBERCRIME INVESTIGATION REPORT", styles['title']))
             story.append(Spacer(1, 20))
 
             # Header information with proper paragraph formatting
@@ -290,22 +290,22 @@ class MurderPDFGenerator:
     def format_case_details(self, case_data: Dict[str, Any]) -> list:
         """Format case details for the PDF with proper text wrapping"""
         details = []
-        styles = self.create_murder_styles()
+        styles = self.create_cyber_styles()
 
         field_mapping = [
             ('date_of_crime', 'Date of Crime:'),
-            ('time_of_crime', 'Time of Crime:'),
-            ('location', 'Location:'),
-            ('victim_name', 'Victim Name:'),
-            ('victim_age', 'Victim Age:'),
-            ('victim_gender', 'Victim Gender:'),
-            ('cause_of_death', 'Cause of Death:'),
-            ('weapon_used', 'Weapon Used:'),
-            ('crime_scene_description', 'Crime Scene:'),
-            ('witnesses', 'Witnesses:'),
-            ('evidence_found', 'Evidence:'),
-            ('suspects', 'Suspects:'),
-            ('additional_notes', 'Additional Notes:')
+            ('who_involved', 'Who Involved:'),
+            ('Damage Description:', 'Damage Description::'),
+            ('suspect_name', 'Suspect Name:'),
+            ('suspect_identity', 'Suspect Identity:'),
+            ('suspect_motive', 'Suspect Motive:'),
+            ('affected_assets', 'Affected Assets:'),
+            ('evidence', 'Evidence Found:'),
+            ('evidence_collection', 'Evidence Collection Method:'),
+            ('timeline_intrusion', 'Timeline of Events:'),
+            ('type_of_crime', 'Type of Crime:'),
+            ('asset_affected', 'Asset Affected:'),
+            ('cyber_forensic', 'Cyber Forensic Notes:')
         ]
 
         for data_key, display_name in field_mapping:
@@ -400,7 +400,7 @@ class MurderPDFGenerator:
         # Define the expected sub-sections with patterns
         section_patterns = [
             ("1. Comprehensive Analysis of the Case", "1."),
-            ("2. Potential Motives and Suspects to Consider", "2."),
+            ("2. Potential Motives and asset_affected to Consider", "2."),
             ("3. Recommended Investigative Approaches", "3."),
             ("4. Key Evidence to Focus On and Analysis", "4."),
             ("5. Possible Solutions or Conclusions", "5.")
@@ -503,13 +503,13 @@ class MurderPDFGenerator:
 
         return '\n'.join(cleaned_lines)
 
-    def create_murder_styles(self):
-        """Create professional styles for murder investigation PDFs"""
+    def create_cyber_styles(self):
+        """Create professional styles for cypercrime investigation PDFs"""
         styles = getSampleStyleSheet()
 
         custom_styles = {
             'title': ParagraphStyle(
-                'MurderTitle',
+                'CybercrimeTitle',
                 parent=styles['Heading1'],
                 fontSize=18,
                 spaceAfter=30,
@@ -518,7 +518,7 @@ class MurderPDFGenerator:
                 fontName='Helvetica-Bold'
             ),
             'section_header': ParagraphStyle(
-                'MurderHeading',
+                'CybercrimeHeading',
                 parent=styles['Heading2'],
                 fontSize=14,
                 spaceAfter=12,
@@ -559,8 +559,7 @@ class MurderPDFGenerator:
 
         return custom_styles
 
-
-class MurderAgent:
+class CybercrimeAgent:
     def __init__(self):
         self.nvidia_api_key = NVIDIA_API_KEY
         self.nvidia_api_url = NVIDIA_API_URL
@@ -625,7 +624,7 @@ class MurderAgent:
                 "messages": [
                     {
                         "role": "system",
-                        "content": "You are a specialized AI assistant for homicide investigations. Provide detailed, professional analysis of murder cases with comprehensive insights on motives, suspects, evidence, and investigative approaches."
+                        "content": "You are a specialized AI assistant for crybercrime investigations. Provide detailed, professional analysis of crybercrime cases with comprehensive insights on motives, asset_affected, evidence, and investigative approaches."
                     },
                     {
                         "role": "user",
@@ -648,86 +647,95 @@ class MurderAgent:
 
     def generate_fallback_analysis(self) -> str:
         """Generate fallback analysis if NVIDIA API fails"""
-        return """[LIVE DATA ANALYSIS]
+        return """**[LIVE DATA ANALYSIS]**
 
-Case Analysis Report:
+**Case Analysis Report**
 
 I apologize, but I'm currently unable to connect to the advanced analysis system. However, I can provide a basic framework for your investigation:
 
 **1. Comprehensive Analysis of the Case**
-- Review all collected evidence systematically
-- Establish timeline of events
-- Analyze victim profile and potential connections
+- Review all collected evidence and evidence_collection thoroughly
+- Establish a clear timeline_intrusion of the incident
+- Analyze suspect_name, suspect_identity, and suspect_motive for behavioral patterns
+- Cross-reference the date_of_crime and who_involved to confirm involvement and timeline accuracy
 
-**2. Potential Motives and Suspects to Consider**
-- Personal relationships and conflicts
-- Financial motives
-- Random crime vs. targeted attack
+**2. Potential Motives and asset_affected to Consider**
+- Investigate suspect_motive for clues around emotional, personal, or ideological triggers
+- Assess damage and affected_assets for material, digital, or physical losses
+- Distinguish between targeted attacks and random intrusions based on patterns
+- Consider how the asset_affected connects to the victim or suspects
 
 **3. Recommended Investigative Approaches**
-- Interview all witnesses thoroughly
-- Examine physical evidence
-- Check alibis of potential suspects
+- Interview all individuals linked to the timeline_intrusion and who_involved
+- Reconstruct evidence_collection procedures to validate integrity
+- Cross-verify suspect_identity and alibis related to affected assets and presence near crime scene
 
 **4. Key Evidence to Focus On and Analysis**
-- Crime scene forensics
-- Witness testimonies
-- Physical evidence analysis
+- Prioritize analysis of the crime scene and collected evidence
+- Review witness details mentioned in evidence_collection
+- Apply forensic techniques to cyber_forensic data and correlate with physical findings
+- Validate the authenticity of asset_affected and affected_assets links to the case
 
 **5. Possible Solutions or Conclusions**
-- Continue investigation with systematic approach
-- Focus on most promising leads
-- Consider consulting with forensic experts
+- Proceed with a systematic evidence-based investigation
+- Focus on leads connected to suspect_motive, timeline inconsistencies, and unusual damage patterns
+- If technical elements (like cyber intrusion) are involved, deepen cyber_forensic assessments
+- Seek outside expert consultation for specialized domains (e.g., digital, forensic, psychological)
 
 Please ensure all evidence is properly documented and chain of custody is maintained."""
 
     def generate_analysis_prompt(self, case_details: Dict[str, Any]) -> str:
         """Generate prompt for NVIDIA API analysis"""
         prompt = f"""
-Analyze the following murder case and provide a comprehensive investigation report:
+Analyze the following cybercrime case and provide a comprehensive investigation report:
 
 **Case Details:**
 Case ID: {case_details.get('case_id', 'N/A')}
 Date of Crime: {case_details.get('date_of_crime', 'N/A')}
-Time of Crime: {case_details.get('time_of_crime', 'N/A')}
-Location: {case_details.get('location', 'N/A')}
-Victim Name: {case_details.get('victim_name', 'N/A')}
-Victim Age: {case_details.get('victim_age', 'N/A')}
-Victim Gender: {case_details.get('victim_gender', 'N/A')}
-Cause of Death: {case_details.get('cause_of_death', 'N/A')}
-Weapon Used: {case_details.get('weapon_used', 'N/A')}
-Crime Scene Description: {case_details.get('crime_scene_description', 'N/A')}
-Witnesses: {case_details.get('witnesses', 'N/A')}
-Evidence Found: {case_details.get('evidence_found', 'N/A')}
-Suspects: {case_details.get('suspects', 'N/A')}
-Additional Notes: {case_details.get('additional_notes', 'N/A')}
+Who Involved: {case_details.get('who_involved', 'N/A')}
+Damage Description:: {case_details.get('Damage Description:', 'N/A')}
+Suspect Name: {case_details.get('suspect_name', 'N/A')}
+Suspect Identity: {case_details.get('suspect_identity', 'N/A')}
+Suspect Motive: {case_details.get('suspect_motive', 'N/A')}
+Affected Assets: {case_details.get('affected_assets', 'N/A')}
+Evidence Found: {case_details.get('evidence', 'N/A')}
+Crime Scene Description: {case_details.get('evidence_collection', 'N/A')}
+Timeline of Events: {case_details.get('timeline_intrusion', 'N/A')}
+Evidence Found: {case_details.get('type_of_crime', 'N/A')}
+Asset Affected: {case_details.get('asset_affected', 'N/A')}
+Cyber Forensic Notes: {case_details.get('cyber_forensic', 'N/A')}
 
 Please provide a detailed analysis following this structure:
 
 **1. Comprehensive Analysis of the Case**
-- Analyze the victim profile, crime scene, and circumstances
-- Identify patterns and significant details
-- Assess the nature of the crime (planned vs. spontaneous, personal vs. random)
+- Review all collected evidence and evidence_collection thoroughly
+- Establish a clear timeline_intrusion of the incident
+- Analyze suspect_name, suspect_identity, and suspect_motive for behavioral patterns
+- Cross-reference the date_of_crime and who_involved to confirm involvement and timeline accuracy
 
-**2. Potential Motives and Suspects to Consider**
-- Analyze possible motives based on the evidence
-- Evaluate potential suspects and their likelihood
-- Consider relationship dynamics and external factors
+**2. Potential Motives and asset_affected to Consider**
+- Investigate suspect_motive for clues around emotional, personal, or ideological triggers
+- Assess damage and affected_assets for material, digital, or physical losses
+- Distinguish between targeted attacks and random intrusions based on patterns
+- Consider how the asset_affected connects to the victim or suspects
 
 **3. Recommended Investigative Approaches**
-- Suggest specific investigative steps
-- Prioritize evidence collection and analysis
-- Recommend interview strategies
+- Interview all individuals linked to the timeline_intrusion and who_involved
+- Reconstruct evidence_collection procedures to validate integrity
+- Cross-verify suspect_identity and alibis related to affected assets and presence near crime scene
 
 **4. Key Evidence to Focus On and Analysis**
-- Highlight the most critical evidence
-- Suggest forensic analysis priorities
-- Identify gaps in evidence collection
+- Prioritize analysis of the crime scene and collected evidence
+- Review witness details mentioned in evidence_collection
+- Apply forensic techniques to cyber_forensic data and correlate with physical findings
+- Validate the authenticity of asset_affected and affected_assets links to the case
 
 **5. Possible Solutions or Conclusions**
-- Provide investigative conclusions based on available evidence
-- Suggest next steps for case resolution
-- Identify areas requiring further investigation
+- Proceed with a systematic evidence-based investigation
+- Focus on leads connected to suspect_motive, timeline inconsistencies, and unusual damage patterns
+- If technical elements (like cyber intrusion) are involved, deepen cyber_forensic assessments
+- Seek outside expert consultation for specialized domains (e.g., digital, forensic, psychological)
+
 
 Format your response with clear headers and detailed analysis for each section.
 """
@@ -800,15 +808,15 @@ Format your response with clear headers and detailed analysis for each section.
         return session_id, current_step["message"] if current_step else "What would you like to know?", True, current_step_id, None
 
 
-# Initialize the Murder Agent
-murder_agent = MurderAgent()
+# Initialize the Cyber Agent
+cyber_agent = CybercrimeAgent()
 
 # FastAPI Routes
 @app.get("/", response_model=Dict[str, str])
 async def home():
     """Home endpoint"""
     logger.info("Received GET request for home endpoint")
-    return {"message": "Murder Agent API is running"}
+    return {"message": "Cybercrime Agent API is running"}
 
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
@@ -816,27 +824,27 @@ async def health_check():
     logger.info("Received GET request for health endpoint")
     return HealthResponse(
         status="healthy",
-        message="Murder Agent API is running",
+        message="Cybercrime Agent API is running",
         endpoints=[
             "/",
             "/health",
-            "/api/murder",
-            "/api/murder/download-pdf",
+            "/api/cyber",
+            "/api/cyber/download-pdf",
             "/docs",
             "/redoc"
         ]
     )
 
-@app.post("/api/murder", response_model=MurderAgentResponse)
-async def murder_agent_endpoint(request: MurderAgentRequest):
-    """Main endpoint for murder agent interactions"""
+@app.post("/api/cyber", response_model=CyberAgentResponse)
+async def cyber_agent_endpoint(request: CyberAgentRequest):
+    """Main endpoint for cybercrime agent interactions"""
     try:
         # Health check
         if request.question == "ping":
-            return MurderAgentResponse(
+            return CyberAgentResponse(
                 success=True,
-                data=MurderAgentData(
-                    analysis="Murder Agent is running",
+                data=CyberAgentData(
+                    analysis="Cybercrime Agent is running",
                     is_collecting_info=False,
                     current_step="ping",
                     collected_data={},
@@ -848,15 +856,15 @@ async def murder_agent_endpoint(request: MurderAgentRequest):
 
         force_new_session = request.force_new_session or request.forceReset
 
-        session_id, response, is_collecting_info, current_step, error_message = murder_agent.process_message(
+        session_id, response, is_collecting_info, current_step, error_message = cyber_agent.process_message(
             request.question,
             request.session_id,
             force_new_session=force_new_session
         )
 
-        return MurderAgentResponse(
+        return CyberAgentResponse(
             success=True,
-            data=MurderAgentData(
+            data=CyberAgentData(
                 analysis=response,
                 is_collecting_info=is_collecting_info,
                 current_step=current_step,
@@ -868,7 +876,7 @@ async def murder_agent_endpoint(request: MurderAgentRequest):
         )
 
     except Exception as e:
-        logger.error(f"Error in murder_agent_endpoint: {str(e)}")
+        logger.error(f"Error in cyber_agent_endpoint: {str(e)}")
         raise HTTPException(
             status_code=500,
             detail={
@@ -880,9 +888,9 @@ async def murder_agent_endpoint(request: MurderAgentRequest):
             }
         )
 
-@app.post("/api/murder/download-pdf")
-async def download_murder_pdf(request: PDFDownloadRequest):
-    """Generate and download PDF report for murder investigation"""
+@app.post("/api/cyber/download-pdf")
+async def download_cybercrime_pdf(request: PDFDownloadRequest):
+    """Generate and download PDF report for cybercrime investigation"""
     try:
         if not REPORTLAB_AVAILABLE:
             raise HTTPException(
@@ -929,13 +937,13 @@ async def download_murder_pdf(request: PDFDownloadRequest):
             )
 
         # Generate PDF
-        pdf_generator = MurderPDFGenerator()
-        pdf_buffer = pdf_generator.generate_murder_pdf(case_data, analysis_text)
+        pdf_generator = CyberPDFGenerator()
+        pdf_buffer = pdf_generator.generate_cyber_pdf(case_data, analysis_text)
 
         # Generate filename
         case_id = case_data.get('case_id', 'Unknown')
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"Murder_Investigation_Report_{case_id}_{timestamp}.pdf"
+        filename = f"Cybercrime_Investigation_Report_{case_id}_{timestamp}.pdf"
 
         # Return PDF file as streaming response
         return StreamingResponse(
@@ -947,7 +955,7 @@ async def download_murder_pdf(request: PDFDownloadRequest):
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error in download_murder_pdf: {str(e)}")
+        logger.error(f"Error in download_cybercrime_pdf: {str(e)}")
         raise HTTPException(
             status_code=500,
             detail={
@@ -958,7 +966,7 @@ async def download_murder_pdf(request: PDFDownloadRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    logger.info("Starting Murder Agent API server on port 5001")
+    logger.info("Starting Cybercrime Agent API server on port 5001")
     uvicorn.run(
         "app:app",
         host="0.0.0.0",

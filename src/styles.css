@@ -165,6 +165,10 @@ body {
     border-color: rgba(16, 185, 129, 0.3);
 }
 
+.narcotics-panel {
+    border-color: rgba(67, 16, 185, 0.3);
+}
+
 /* Agent Header */
 .agent-header {
     padding: 1rem 1.5rem;
@@ -187,6 +191,10 @@ body {
 
 .cyber-panel .agent-header h2 i {
     color: #10b981;
+}
+
+.narcotics-panel .agent-header h2 i {
+    color: #121dc0;
 }
 
 /* Chat Container - Updated for dual layout */
@@ -243,6 +251,10 @@ body {
     background: linear-gradient(135deg, #10b981, #059669) !important;
 }
 
+.narcotics-avatar {
+    background: linear-gradient(135deg, #1083b9, #0668c4) !important;
+}
+
 .welcome-content h2 {
     font-size: 1.75rem;
     font-weight: 600;
@@ -282,6 +294,11 @@ body {
 
 .cyber-start {
     background: linear-gradient(135deg, #10b981, #059669) !important;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3) !important;
+}
+
+.narcotics-start {
+    background: linear-gradient(135deg, #1083b9, #0668c4) !important;
     box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3) !important;
 }
 
@@ -463,6 +480,27 @@ body {
 }
 
 #cyberMessageInput::placeholder {
+    color: #64748b;
+}
+
+#narcoticMessageInput {
+    flex: 1;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(71, 85, 105, 0.5);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    color: #f8fafc;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#narcoticMessageInput:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+#narcoticMessageInput::placeholder {
     color: #64748b;
 }
 
@@ -920,6 +958,15 @@ body {
 
 .cyber-btn:hover {
     background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-2px);
+}
+
+.narcotics-btn {
+    background: linear-gradient(135deg, #121dc0, #121dc0);
+}
+
+.narcotics-btn:hover {
+    background: linear-gradient(135deg, #0b2372, #0b2372);
     transform: translateY(-2px);
 }
 

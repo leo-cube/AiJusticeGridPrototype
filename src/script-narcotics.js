@@ -1,7 +1,7 @@
 // Global variables for cyber agent
 let NarcoticsSessionId = null;
-let cyberCurrentStep = 0;
-let cyberTotalSteps = 14;
+let NarcoticsCurrentStep = 0;
+let NarcoticsTotalSteps = 14;
 let NarcoticsIsWaitingForResponse = false;
 
 // API Configuration - Updated for unified server
@@ -15,7 +15,7 @@ const API_ENDPOINT = `${API_BASE_URL}/api/narcotics`;
 const SESSION_KEY = 'aiJusticeGrid_session';
 
 // Step names for progress tracking - cyber agent
-const cyberStepNames = [
+const NarcoticsStepNames = [
     'Case ID',
     'Type Of Substance',
     'Drugs Acquired',
@@ -53,15 +53,15 @@ function goBack() {
 
 // Setup event listeners for cyber agent
 function setupEventListeners() {
-    const messageInput = document.getElementById('NarcoticMessageInput');
-    const sendBtn = document.getElementById('NarcoticSendBtn');
+    const messageInput = document.getElementById('narcoticMessageInput');
+    const sendBtn = document.getElementById('narcoticSendBtn');
 
     if (messageInput && sendBtn) {
         // Enter key to send message
         messageInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                sendMessage_cyber();
+                sendMessage_narcotics();
             }
         });
 
@@ -128,7 +128,7 @@ async function startInvestigation_narcotics() {
             console.log('Narcotics session ID:', NarcoticsSessionId);
 
             // Hide welcome message and show chat interface
-            const welcomeMsg = document.querySelector('#chatMessages .welcome-message');
+            const welcomeMsg = document.querySelector('#NarcoticsChatMessages .welcome-message');
             if (welcomeMsg) {
                 welcomeMsg.style.display = 'none';
                 console.log('Welcome message hidden');
@@ -136,8 +136,8 @@ async function startInvestigation_narcotics() {
                 console.error('Welcome message not found');
             }
 
-            const progressSection = document.getElementById('narcoticsInputSection');
-            const inputSection = document.getElementById('inputSection');
+            const progressSection = document.getElementById('narcoticsProgressSection');
+            const inputSection = document.getElementById('NarcoticsInputSection');
 
             if (progressSection) {
                 progressSection.style.display = 'block';
@@ -160,7 +160,7 @@ async function startInvestigation_narcotics() {
             updateProgress();
 
             // Focus on input
-            const messageInput = document.getElementById('NarcoticMessageInput');
+            const messageInput = document.getElementById('narcoticMessageInput');
             if (messageInput) {
                 messageInput.focus();
                 console.log('Input focused');
@@ -180,7 +180,7 @@ async function startInvestigation_narcotics() {
 
 // Send message
 async function sendMessage_narcotics() {
-    const messageInput = document.getElementById('NarcoticMessageInput');
+    const messageInput = document.getElementById('narcoticMessageInput');
     const message = messageInput.value.trim();
 
     if (!message || NarcoticsIsWaitingForResponse) return;
@@ -190,7 +190,7 @@ async function sendMessage_narcotics() {
 
     // Clear input and disable send button
     messageInput.value = '';
-    const sendBtn = document.getElementById('NarcoticSendBtn');
+    const sendBtn = document.getElementById('narcoticSendBtn');
     if (sendBtn) sendBtn.disabled = true;
     NarcoticsIsWaitingForResponse = true;
 
@@ -240,7 +240,7 @@ async function sendMessage_narcotics() {
     } finally {
         showLoading(false);
         NarcoticsIsWaitingForResponse = false;
-        const messageInput = document.getElementById('NarcoticMessageInput');
+        const messageInput = document.getElementById('narcoticMessageInput');
         if (messageInput) messageInput.focus();
     }
 }
@@ -287,7 +287,7 @@ function formatMessageContent(content) {
 
     // Highlight [LIVE DATA ANALYSIS] header for cyber
     content = content.replace(/\[LIVE DATA ANALYSIS\]/g,
-        '<span style="color: #10b981; font-weight: 600;">[CYBER ANALYSIS]</span>');
+        '<span style="color: #10b981; font-weight: 600;">[NARCOTICS ANALYSIS]</span>');
 
     return content;
 }
@@ -309,7 +309,7 @@ function updateProgress() {
                 `<i class="fas fa-laptop-code"></i><span>Current: ${stepName}</span>`;
         }
     } else {
-        console.error('Cyber progress elements not found:', {
+        console.error('Narcotics progress elements not found:', {
             progressFill: !!progressFill,
             progressText: !!progressText,
             currentStepInfo: !!currentStepInfo
@@ -353,9 +353,9 @@ async function resetConversation_narcotics() {
                 updateProgress();
 
                 // Clear input
-                const messageInput = document.getElementById('NarcoticMessageInput');
+                const messageInput = document.getElementById('narcoticMessageInput');
                 if (messageInput) messageInput.value = '';
-                const sendBtn = document.getElementById('NarcoticSendBtn');
+                const sendBtn = document.getElementById('narcoticSendBtn');
                 if (sendBtn) sendBtn.disabled = true;
 
                 // Hide download button

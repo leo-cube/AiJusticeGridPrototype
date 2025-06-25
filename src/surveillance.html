@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surveillance Investigation - AiJusticeGrid</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <i class="fas fa-shield-alt logo-icon"></i>
+                    <div class="logo-text">
+                        <h1>AiJusticeGrid</h1>
+                        <span class="subtitle">Surveillance Investigation Agent</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="back-btn" onclick="goBack()" title="Back to Agent Selection">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Back</span>
+                    </button>
+                    <div class="user-info" id="userInfo">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="userName">Loading...</span>
+                    </div>
+                    <div class="status-indicator">
+                        <div class="status-dot" id="statusDot"></div>
+                        <span id="statusText">Connecting...</span>
+                    </div>
+                    <button class="logout-btn" onclick="logout()" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Chat Interface -->
+        <main class="chat-container">
+            <!-- Chat Messages Area -->
+            <div class="chat-messages" id="surveillanceChatMessages">
+                <div class="welcome-message">
+                    <div class="agent-avatar surveillance-avatar">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <div class="welcome-content">
+                        <h2>Welcome to Surveillance Investigation Assistant</h2>
+                        <p>I'm your specialized AI assistant for surveillance related cases. I'll help you analyze complex surveillance cases.</p>
+                        <button class="start-btn surveillance-start" onclick="startInvestigation_surveillance()">
+                            <i class="fas fa-play"></i>
+                            Start Surveillance Investigation
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div class="progress-section" id="surveillanceProgressSection" style="display: none;">
+                <div class="progress-header">
+                    <h4>Surveillance Case Progress</h4>
+                    <span class="progress-text" id="surveillanceProgressText">0/14 Steps Completed</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="surveillanceProgressFill"></div>
+                </div>
+                <div class="current-step" id="surveillanceCurrentStepInfo">
+                    <i class="fas fa-laptop-code"></i>
+                    <span>Ready to begin case collection</span>
+                </div>
+            </div>
+
+            <!-- Input Section -->
+            <div class="input-section" id="surveillanceInputSection" style="display: none;">
+                <div class="input-container">
+                    <input type="text" id="surveillanceMessageInput" placeholder="Enter surveillance case details...">
+                    <button class="send-btn" id="surveillanceSendBtn" onclick="sendMessage_surveillance()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="input-actions">
+                    <button class="action-btn reset-btn" onclick="resetConversation_surveillance()">
+                        <i class="fas fa-redo"></i>
+                        Reset Case
+                    </button>
+                    <button class="action-btn download-btn" id="surveillanceDownloadBtn" onclick="downloadPDF_surveillance()" style="display: none;">
+                        <i class="fas fa-download"></i>
+                        Download PDF Report
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <p>Analyzing surveillance data...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script-surveillance.js"></script>
+</body>
+</html>

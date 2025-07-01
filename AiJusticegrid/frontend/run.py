@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 # Configuration
-PORT = 8080
+PORT = 8081
 DIRECTORY = Path(__file__).parent / "src"
 
 class CustomHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
@@ -41,26 +41,26 @@ def start_server():
         print("=" * 60)
         print("🌐 Murder Agent Frontend Server")
         print("=" * 60)
-        
+
         # Check if src directory exists
         if not DIRECTORY.exists():
             print(f"✗ Source directory not found: {DIRECTORY}")
             print("Please ensure the frontend files are in the 'src' directory")
             return False
-        
+
         # Check if required files exist
         required_files = ['index.html', 'login.html', 'styles.css', 'script.js']
         missing_files = []
         for file in required_files:
             if not (DIRECTORY / file).exists():
                 missing_files.append(file)
-        
+
         if missing_files:
             print(f"✗ Missing required files: {', '.join(missing_files)}")
             return False
-        
+
         print("✓ All frontend files found")
-        
+
         with socketserver.TCPServer(("", PORT), CustomHTTPRequestHandler) as httpd:
             print(f"\n🚀 Frontend server starting...")
             print(f"🌐 Web Interface: http://localhost:{PORT}")

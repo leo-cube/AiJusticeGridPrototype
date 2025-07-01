@@ -84,7 +84,7 @@ def get_nvidia_client():
     return nvidia_client
 
 class PDFDownloadRequest(BaseModel):
-    session_id: str = Field(description="Session ID for PDF generation")    
+    session_id: str = Field(description="Session ID for PDF generation")
 
 # Generic Agent Models
 class GenericAgentRequest(BaseModel):
@@ -104,7 +104,7 @@ class GenericAgentResponse(BaseModel):
     success: bool = Field(description="Whether the request was successful")
     data: GenericAgentData = Field(description="Response data")
     session_id: str = Field(description="Session ID")
-    message: str = Field(description="Status message")    
+    message: str = Field(description="Status message")
 
 
 # Dictionary to store conversation states for all agents
@@ -506,7 +506,7 @@ class GenericPDFGenerator:
             return buffer
 
     def format_generic_case_details(self, case_data: Dict[str, Any]) -> list:
-        """Format case details for the PDF"""
+        """Format case details for the PDF with proper text wrapping"""
         details = []
         styles = self.create_generic_styles()
 
@@ -514,28 +514,29 @@ class GenericPDFGenerator:
             details.append(Paragraph("No case data available", styles['body_text']))
             return details
 
-        # Create table data
+        # Create table data with proper text wrapping
         table_data = []
         for key, value in case_data.items():
             if value:  # Only include non-empty values
                 # Format field name
                 field_name = key.replace('_', ' ').title() + ':'
-                # Ensure value is string and limit length
-                field_value = str(value)[:200] + ('...' if len(str(value)) > 200 else '')
-                table_data.append([field_name, field_value])
+                field_value = str(value).strip()
+
+                if field_value and field_value.lower() not in ['n/a', 'none', 'unknown', '']:
+                    # Create paragraphs for proper text wrapping
+                    label_paragraph = self.create_table_cell_paragraph(field_name, styles, bold=True)
+                    value_paragraph = self.create_table_cell_paragraph(field_value, styles, bold=False)
+                    table_data.append([label_paragraph, value_paragraph])
 
         if table_data:
-            # Create table
-            table = Table(table_data, colWidths=[2*inch, 4*inch])
+            # Create table with adjusted column widths for better text wrapping
+            table = Table(table_data, colWidths=[2.2*inch, 4.3*inch])
             table.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f8f9fa')),
                 ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
                 ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-                ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-                ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
-                ('FONTSIZE', (0, 0), (-1, -1), 10),
-                ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#dee2e6')),
                 ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#dee2e6')),
                 ('LEFTPADDING', (0, 0), (-1, -1), 8),
                 ('RIGHTPADDING', (0, 0), (-1, -1), 8),
                 ('TOPPADDING', (0, 0), (-1, -1), 6),
@@ -545,41 +546,157 @@ class GenericPDFGenerator:
 
         return details
 
+    def create_table_cell_paragraph(self, text: str, styles: dict, bold: bool = False) -> Paragraph:
+        """Create a paragraph for table cell with proper wrapping"""
+        # Ensure text is properly escaped and cleaned
+        clean_text = str(text).strip()
+
+        # Remove markdown formatting from table cell text
+        clean_text = self.clean_markdown_formatting(clean_text)
+
+        # Format long text for better display in tables
+        if len(clean_text) > 80:  # For longer text, add strategic breaks
+            clean_text = self.format_long_text_for_table(clean_text, max_length=80)
+
+        # Create a style for table cells with better wrapping
+        if bold:
+            cell_style = ParagraphStyle(
+                'TableCellBold',
+                parent=styles['body_text'],
+                fontSize=10,
+                fontName='Helvetica-Bold',
+                alignment=TA_LEFT,
+                spaceAfter=2,
+                spaceBefore=2,
+                leftIndent=0,
+                rightIndent=0,
+                wordWrap='LTR',  # Enable word wrapping
+                allowWidows=1,   # Allow single lines at page breaks
+                allowOrphans=1   # Allow single lines at page breaks
+            )
+        else:
+            cell_style = ParagraphStyle(
+                'TableCell',
+                parent=styles['body_text'],
+                fontSize=10,
+                fontName='Helvetica',
+                alignment=TA_LEFT,
+                spaceAfter=2,
+                spaceBefore=2,
+                leftIndent=0,
+                rightIndent=0,
+                wordWrap='LTR',  # Enable word wrapping
+                allowWidows=1,   # Allow single lines at page breaks
+                allowOrphans=1   # Allow single lines at page breaks
+            )
+
+        return Paragraph(clean_text, cell_style)
+
+    def format_long_text_for_table(self, text: str, max_length: int = 100) -> str:
+        """Format long text for better table display by adding strategic line breaks"""
+        if not text or len(text) <= max_length:
+            return text
+
+        # Split long text into smaller chunks at natural break points
+        words = text.split()
+        lines = []
+        current_line = []
+        current_length = 0
+
+        for word in words:
+            if current_length + len(word) + 1 <= max_length:
+                current_line.append(word)
+                current_length += len(word) + 1
+            else:
+                if current_line:
+                    lines.append(' '.join(current_line))
+                current_line = [word]
+                current_length = len(word)
+
+        if current_line:
+            lines.append(' '.join(current_line))
+
+        return '<br/>'.join(lines)
+
     def format_analysis_text(self, analysis_text: str, styles) -> list:
-        """Format analysis text into paragraphs"""
+        """Format analysis text into paragraphs with clean formatting"""
         paragraphs = []
 
         if not analysis_text:
             return [Paragraph("No analysis available.", styles['body_text'])]
 
+        # Clean the entire text first
+        clean_text = self.clean_markdown_formatting(analysis_text)
+
         # Split text into lines and process
-        lines = analysis_text.split('\n')
+        lines = clean_text.split('\n')
 
         for line in lines:
             line = line.strip()
             if not line:
                 continue
 
+            # Skip unwanted headers
+            if '[LIVE DATA ANALYSIS]' in line or line.startswith('Case Analysis:'):
+                continue
+
             # Check for headers
             if any(header in line.upper() for header in [
                 'EXECUTIVE SUMMARY', 'CASE ASSESSMENT', 'EVIDENCE ANALYSIS',
-                'RECOMMENDATIONS', 'NEXT STEPS', 'RISK ASSESSMENT', 'LEGAL CONSIDERATIONS'
+                'RECOMMENDATIONS', 'NEXT STEPS', 'RISK ASSESSMENT', 'LEGAL CONSIDERATIONS',
+                'COMPREHENSIVE ANALYSIS', 'POTENTIAL MOTIVES', 'INVESTIGATIVE APPROACHES',
+                'KEY EVIDENCE', 'POSSIBLE SOLUTIONS', 'CONCLUSIONS'
             ]):
-                clean_header = line.replace('**', '').replace('*', '').strip()
+                clean_header = line.strip()
                 if clean_header.endswith(':'):
                     clean_header = clean_header[:-1]
                 paragraphs.append(Paragraph(clean_header, styles['analysis_header']))
             elif line.startswith('- ') or line.startswith('• '):
                 bullet_text = line[2:].strip()
-                paragraphs.append(Paragraph(f"• {bullet_text}", styles['bullet_point']))
+                if bullet_text:
+                    paragraphs.append(Paragraph(f"• {bullet_text}", styles['bullet_point']))
             elif line.startswith(('1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.')):
                 paragraphs.append(Paragraph(line, styles['bullet_point']))
             else:
-                clean_line = line.replace('**', '').replace('*', '')
-                if clean_line.strip():
-                    paragraphs.append(Paragraph(clean_line, styles['body_text']))
+                if line.strip():
+                    paragraphs.append(Paragraph(line, styles['body_text']))
 
         return paragraphs if paragraphs else [Paragraph("Analysis text could not be formatted.", styles['body_text'])]
+
+    def clean_markdown_formatting(self, text: str) -> str:
+        """Remove all markdown formatting symbols from text"""
+        if not text:
+            return ""
+
+        clean_text = str(text).strip()
+
+        # Remove markdown headers (###, ##, #)
+        clean_text = clean_text.replace('###', '')
+        clean_text = clean_text.replace('##', '')
+        clean_text = clean_text.replace('#', '')
+
+        # Remove bold and italic markdown
+        clean_text = clean_text.replace('**', '')
+        clean_text = clean_text.replace('*', '')
+
+        # Remove other common markdown symbols
+        clean_text = clean_text.replace('`', '')
+        clean_text = clean_text.replace('~~', '')
+
+        # Remove specific unwanted headers
+        clean_text = clean_text.replace('[LIVE DATA ANALYSIS]', '')
+
+        # Clean up extra whitespace while preserving line structure
+        lines = clean_text.split('\n')
+        cleaned_lines = []
+        for line in lines:
+            cleaned_line = line.strip()
+            if cleaned_line:
+                cleaned_lines.append(cleaned_line)
+            elif cleaned_lines and cleaned_lines[-1]:  # Preserve section breaks
+                cleaned_lines.append('')
+
+        return '\n'.join(cleaned_lines)
 
     def create_generic_styles(self):
         """Create professional styles for generic investigation PDFs"""
@@ -731,7 +848,7 @@ async def download_murder_pdf(request: PDFDownloadRequest):
 
 @app.post("/api/cyber/download-pdf")
 async def download_cybercrime_pdf(request: PDFDownloadRequest):
-    return await create_pdf_download_endpoint("cyber", cybercrime_conversation_states)(request)    
+    return await create_pdf_download_endpoint("cyber", cybercrime_conversation_states)(request)
 
 @app.post("/api/humantrafficking/download-pdf")
 async def download_humantrafficking_pdf(request: PDFDownloadRequest):

@@ -2593,7 +2593,7 @@ async def download_moneylaundering_pdf(request: PDFDownloadRequest):
 
 @app.post("/api/onlinefraud/download-pdf")
 async def download_onlinefraud_pdf(request: PDFDownloadRequest):
-    return await create_pdf_download_endpoint("onlinefraud", onlinefraud_conversation_states)(request)
+    return await create_pdf_download_endpoint("online fraud", onlinefraud_conversation_states)(request)
 
 @app.post("/api/sexualassault/download-pdf")
 async def download_sexualassault_pdf(request: PDFDownloadRequest):

@@ -1,0 +1,81 @@
+
+[
+  {
+    "id": "greeting",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nHello, I'm the Money Laundering Agent, an AI assistant specializing in financial crime investigations. What is the Case ID?",
+    "field": "case_id",
+    "next_step": "date_detected"
+  },
+  {
+    "id": "date_detected",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWhen was the suspicious activity first detected? (YYYY-MM-DD).",
+    "field": "date_detected",
+    "next_step": "account_or_entity"
+  },
+  {
+    "id": "account_or_entity",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWhich account or entity is under investigation?",
+    "field": "account_or_entity",
+    "next_step": "jurisdiction"
+  },
+  {
+    "id": "jurisdiction",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWhat is the jurisdiction (country/region) of the account or transactions?",
+    "field": "jurisdiction",
+    "next_step": "transaction_details"
+  },
+  {
+    "id": "transaction_details",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nProvide details of the suspicious transactions (dates, amounts).",
+    "field": "transaction_details",
+    "next_step": "fund_source"
+  },
+  {
+    "id": "fund_source",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nDo you know the source of the funds?",
+    "field": "fund_source",
+    "next_step": "fund_destination"
+  },
+  {
+    "id": "fund_destination",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWhere were the funds transferred or invested?",
+    "field": "fund_destination",
+    "next_step": "layering_methods"
+  },
+  {
+    "id": "layering_methods",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nDescribe any layering or obfuscation techniques used.",
+    "field": "layering_methods",
+    "next_step": "evidence_collected"
+  },
+  {
+    "id": "evidence_collected",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWhat documentation or data have you collected (bank statements, ledgers)?",
+    "field": "evidence_collected",
+    "next_step": "persons_of_interest"
+  },
+  {
+    "id": "persons_of_interest",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWho are the individuals or entities of interest?",
+    "field": "persons_of_interest",
+    "next_step": "communications"
+  },
+  {
+    "id": "communications",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nHave you intercepted any communications related to these transactions?",
+    "field": "communications",
+    "next_step": "additional_notes"
+  },
+  {
+    "id": "additional_notes",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nAny other relevant context or observations?",
+    "field": "additional_notes",
+    "next_step": "analysis"
+  },
+  {
+    "id": "analysis",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nThank you. I'll now analyze the financial data and prepare your anti–money laundering report.",
+    "field": null,
+    "next_step": null
+  }
+]

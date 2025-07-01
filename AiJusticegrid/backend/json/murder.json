@@ -1,0 +1,86 @@
+[
+    {
+        "id": "greeting",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nHello, I'm the Murder Agent, an AI assistant specialized in homicide investigations. I'll help you analyze a murder case by collecting relevant information. Let's start with the basics. What is the Case ID for this investigation?",
+        "field": "case_id",
+        "next_step": "date_of_crime"
+    },
+    {
+        "id": "date_of_crime",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nThank you. When did the crime occur? Please provide the date (YYYY-MM-DD, MM/DD/YYYY, or text format like 'January 15, 2023').",
+        "field": "date_of_crime",
+        "next_step": "time_of_crime"
+    },
+    {
+        "id": "time_of_crime",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat time did the crime occur? (HH:MM format, or approximate time like '2:30 PM', 'noon', or 'evening')",
+        "field": "time_of_crime",
+        "next_step": "location"
+    },
+    {
+        "id": "location",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWhere did the crime take place? Please provide the location.",
+        "field": "location",
+        "next_step": "victim_name"
+    },
+    {
+        "id": "victim_name",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat is the victim's name?",
+        "field": "victim_name",
+        "next_step": "victim_age"
+    },
+    {
+        "id": "victim_age",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat is the victim's age?",
+        "field": "victim_age",
+        "next_step": "victim_gender"
+    },
+    {
+        "id": "victim_gender",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat is the victim's gender?",
+        "field": "victim_gender",
+        "next_step": "cause_of_death"
+    },
+    {
+        "id": "cause_of_death",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat was the cause of death?",
+        "field": "cause_of_death",
+        "next_step": "weapon_used"
+    },
+    {
+        "id": "weapon_used",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWas a weapon used? If so, what kind?",
+        "field": "weapon_used",
+        "next_step": "crime_scene_description"
+    },
+    {
+        "id": "crime_scene_description",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nPlease describe the crime scene.",
+        "field": "crime_scene_description",
+        "next_step": "witnesses"
+    },
+    {
+        "id": "witnesses",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWere there any witnesses? If so, please provide details.",
+        "field": "witnesses",
+        "next_step": "evidence_found"
+    },
+    {
+        "id": "evidence_found",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nWhat evidence was found at the scene?",
+        "field": "evidence_found",
+        "next_step": "suspects"
+    },
+    {
+        "id": "suspects",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nAre there any suspects at this time?",
+        "field": "suspects",
+        "next_step": "additional_notes"
+    },
+    {
+        "id": "additional_notes",
+        "message": "**[LIVE DATA ANALYSIS]**\n\nDo you have any additional notes or information about the case?",
+        "field": "additional_notes",
+        "next_step": "analysis"
+    }
+]

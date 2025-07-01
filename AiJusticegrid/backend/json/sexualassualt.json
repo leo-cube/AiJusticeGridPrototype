@@ -1,0 +1,92 @@
+[
+  {
+    "id": "greeting",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nHello, I'm the Sexual Assault Agent, an AI assistant specialized in sexual assault investigations. Let's begin. What is the Case ID for this investigation?",
+    "field": "case_id",
+    "next_step": "date_of_assault"
+  },
+  {
+    "id": "date_of_assault",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWhen did the assault occur? Please provide the date (YYYY-MM-DD or similar).",
+    "field": "date_of_assault",
+    "next_step": "time_of_assault"
+  },
+  {
+    "id": "time_of_assault",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWhat time did the assault occur? (e.g. '2:30 PM', 'late evening')",
+    "field": "time_of_assault",
+    "next_step": "location"
+  },
+  {
+    "id": "location",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWhere did the assault take place? Please describe the location.",
+    "field": "location",
+    "next_step": "victim_name"
+  },
+  {
+    "id": "victim_name",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWhat is the victim's name?",
+    "field": "victim_name",
+    "next_step": "victim_age"
+  },
+  {
+    "id": "victim_age",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nHow old is the victim?",
+    "field": "victim_age",
+    "next_step": "victim_gender"
+  },
+  {
+    "id": "victim_gender",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWhat is the victim's gender?",
+    "field": "victim_gender",
+    "next_step": "relationship_to_suspect"
+  },
+  {
+    "id": "relationship_to_suspect",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nDoes the victim know the suspect? If so, what is their relationship?",
+    "field": "relationship_to_suspect",
+    "next_step": "description_of_assault"
+  },
+  {
+    "id": "description_of_assault",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nPlease describe what happened during the assault.",
+    "field": "description_of_assault",
+    "next_step": "injuries"
+  },
+  {
+    "id": "injuries",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWere there any physical injuries? Please detail.",
+    "field": "injuries",
+    "next_step": "evidence_collected"
+  },
+  {
+    "id": "evidence_collected",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWhat evidence was collected (e.g., clothing, swabs, photos)?",
+    "field": "evidence_collected",
+    "next_step": "witnesses"
+  },
+  {
+    "id": "witnesses",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWere there any witnesses? If so, provide their details.",
+    "field": "witnesses",
+    "next_step": "suspects"
+  },
+  {
+    "id": "suspects",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nIs there a suspect? Provide name/description if known.",
+    "field": "suspects",
+    "next_step": "additional_notes"
+  },
+  {
+    "id": "additional_notes",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nAny additional information or context about the case?",
+    "field": "additional_notes",
+    "next_step": "analysis"
+  },
+  {
+    "id": "analysis",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nThank you. I'll now analyze the provided details and prepare a report.",
+    "field": null,
+    "next_step": null
+  }
+]

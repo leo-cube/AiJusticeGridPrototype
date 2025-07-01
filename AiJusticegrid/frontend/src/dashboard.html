@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiJusticeGrid - Agent Dashboard</title>
+    <link rel="stylesheet" href="dashboard-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="background-animation">
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+            <div class="shape shape-5"></div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <i class="fas fa-shield-alt logo-icon"></i>
+                    <div class="logo-text">
+                        <h1>AiJusticeGrid</h1>
+                        <span class="subtitle">Criminal Investigation System</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Detective Admin</span>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Section -->
+            <section class="welcome-section">
+                <div class="welcome-content">
+                    <h2>Welcome to AiJusticeGrid</h2>
+                    <p>Select an AI investigation agent to begin your case analysis</p>
+                </div>
+                <div class="system-status">
+                    <div class="status-indicator">
+                        <div class="status-dot connected" id="statusDot"></div>
+                        <span id="statusText">System Online</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Agent Selection -->
+            <section class="agents-section">
+                <h3>Available Investigation Agents</h3>
+                <div class="agents-grid">
+                    <!-- Murder Agent Card -->
+                    <div class="agent-card" onclick="selectAgent('murder')">
+                        <div class="agent-icon">
+                            <i class="fas fa-user-secret"></i>
+                        </div>
+                        <div class="agent-info">
+                            <h4>Murder Agent</h4>
+                            <p>Specialized AI assistant for homicide investigations and forensic analysis</p>
+                            <div class="agent-features">
+                                <span class="feature-tag">
+                                    <i class="fas fa-search"></i>
+                                    Crime Scene Analysis
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-fingerprint"></i>
+                                    Evidence Processing
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-file-alt"></i>
+                                    Report Generation
+                                </span>
+                            </div>
+                        </div>
+                        <div class="agent-action">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Cyber Crime Agent Card -->
+                    <div class="agent-card" onclick="selectAgent('cybercrime')">
+                        <div class="agent-icon cyber">
+                            <i class="fas fa-shield-virus"></i>
+                        </div>
+                        <div class="agent-info">
+                            <h4>Cyber Crime Agent</h4>
+                            <p>Expert AI assistant for cybercrime investigations and digital forensics</p>
+                            <div class="agent-features">
+                                <span class="feature-tag">
+                                    <i class="fas fa-bug"></i>
+                                    Malware Analysis
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-network-wired"></i>
+                                    Network Forensics
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-database"></i>
+                                    Data Recovery
+                                </span>
+                            </div>
+                        </div>
+                        <div class="agent-action">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Human Trafficking Agent Card -->
+                    <div class="agent-card" onclick="selectAgent('humantrafficking')">
+                        <div class="agent-icon humantrafficking">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="agent-info">
+                            <h4>Human Trafficking Agent</h4>
+                            <p>Specialized AI assistant for human trafficking investigations and victim identification</p>
+                            <div class="agent-features">
+                                <span class="feature-tag">
+                                    <i class="fas fa-search"></i>
+                                    Victim Identification
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-route"></i>
+                                    Trafficking Routes
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-handcuffs"></i>
+                                    Perpetrator Analysis
+                                </span>
+                            </div>
+                        </div>
+                        <div class="agent-action">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Narcotics Agent Card -->
+                    <div class="agent-card" onclick="selectAgent('narcotics')">
+                        <div class="agent-icon narcotics">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <div class="agent-info">
+                            <h4>Narcotics Agent</h4>
+                            <p>Expert AI assistant for drug-related crime investigations and substance analysis</p>
+                            <div class="agent-features">
+                                <span class="feature-tag">
+                                    <i class="fas fa-vial"></i>
+                                    Substance Analysis
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-map-marked-alt"></i>
+                                    Distribution Networks
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    Financial Tracking
+                                </span>
+                            </div>
+                        </div>
+                        <div class="agent-action">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Money Laundering Agent Card -->
+                    <div class="agent-card" onclick="selectAgent('moneylaundering')">
+                        <div class="agent-icon moneylaundering">
+                            <i class="fas fa-money-check-alt"></i>
+                        </div>
+                        <div class="agent-info">
+                            <h4>Money Laundering Agent</h4>
+                            <p>Specialized AI assistant for financial crime investigations and asset tracking</p>
+                            <div class="agent-features">
+                                <span class="feature-tag">
+                                    <i class="fas fa-chart-line"></i>
+                                    Financial Analysis
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-university"></i>
+                                    Banking Records
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-globe"></i>
+                                    International Transfers
+                                </span>
+                            </div>
+                        </div>
+                        <div class="agent-action">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Online Fraud Agent Card -->
+                    <div class="agent-card" onclick="selectAgent('onlinefraud')">
+                        <div class="agent-icon onlinefraud">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="agent-info">
+                            <h4>Online Fraud Agent</h4>
+                            <p>Expert AI assistant for digital fraud investigations and online scam analysis</p>
+                            <div class="agent-features">
+                                <span class="feature-tag">
+                                    <i class="fas fa-laptop"></i>
+                                    Digital Forensics
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-envelope"></i>
+                                    Email Analysis
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-shield-alt"></i>
+                                    Identity Protection
+                                </span>
+                            </div>
+                        </div>
+                        <div class="agent-action">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Sexual Assault Agent Card -->
+                    <div class="agent-card" onclick="selectAgent('sexualassault')">
+                        <div class="agent-icon sexualassault">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="agent-info">
+                            <h4>Sexual Assault Agent</h4>
+                            <p>Specialized AI assistant for sexual assault investigations and victim support</p>
+                            <div class="agent-features">
+                                <span class="feature-tag">
+                                    <i class="fas fa-heart"></i>
+                                    Victim Support
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-dna"></i>
+                                    Evidence Analysis
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-balance-scale"></i>
+                                    Legal Procedures
+                                </span>
+                            </div>
+                        </div>
+                        <div class="agent-action">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Surveillance Agent Card -->
+                    <div class="agent-card" onclick="selectAgent('surveillance')">
+                        <div class="agent-icon surveillance">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="agent-info">
+                            <h4>Surveillance Agent</h4>
+                            <p>Expert AI assistant for surveillance operations and monitoring activities</p>
+                            <div class="agent-features">
+                                <span class="feature-tag">
+                                    <i class="fas fa-camera"></i>
+                                    Video Analysis
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-clock"></i>
+                                    Timeline Tracking
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-eye"></i>
+                                    Pattern Recognition
+                                </span>
+                            </div>
+                        </div>
+                        <div class="agent-action">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Theft Agent Card -->
+                    <div class="agent-card" onclick="selectAgent('theft')">
+                        <div class="agent-icon theft">
+                            <i class="fas fa-mask"></i>
+                        </div>
+                        <div class="agent-info">
+                            <h4>Theft Agent</h4>
+                            <p>Specialized AI assistant for theft investigations and property recovery</p>
+                            <div class="agent-features">
+                                <span class="feature-tag">
+                                    <i class="fas fa-fingerprint"></i>
+                                    Evidence Collection
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-search-location"></i>
+                                    Asset Recovery
+                                </span>
+                                <span class="feature-tag">
+                                    <i class="fas fa-user-secret"></i>
+                                    Suspect Profiling
+                                </span>
+                            </div>
+                        </div>
+                        <div class="agent-action">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Statistics Section -->
+            <section class="stats-section">
+                <h3>System Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4>Active Cases</h4>
+                            <span class="stat-number">24</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4>Solved Cases</h4>
+                            <span class="stat-number">156</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4>Avg. Resolution Time</h4>
+                            <span class="stat-number">3.2 days</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4>Active Investigators</h4>
+                            <span class="stat-number">12</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <span>© 2024 AiJusticeGrid - Advanced Criminal Investigation System</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#" onclick="showHelp()">Help</a>
+                    <a href="#" onclick="showAbout()">About</a>
+                    <a href="#" onclick="showPrivacy()">Privacy</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="modal-overlay" id="loadingModal" style="display: none;">
+        <div class="loading-modal">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+            <h3>Initializing Agent</h3>
+            <p id="loadingText">Please wait while we prepare your investigation environment...</p>
+        </div>
+    </div>
+
+    <script src="dashboard-script.js"></script>
+</body>
+</html>

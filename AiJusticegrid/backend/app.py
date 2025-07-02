@@ -306,8 +306,8 @@ onlinefraud_agent = GenericAgent("onlinefraud")
 sexualassault_agent = GenericAgent("sexualassualt")  # Note: keeping original filename spelling
 surveillance_agent = GenericAgent("surveillance")
 theft_agent = GenericAgent("theft")
-anti_smuggling = GenericAgent("antiSmuggle")
-customs_border = GenericAgent("customsBorder")
+anti_smuggling = GenericAgent("antismuggle")
+customs_border = GenericAgent("customsborder")
 
 # Health check endpoint
 @app.get("/health")
@@ -338,7 +338,7 @@ async def health_check():
 async def home():
     """Home endpoint"""
     logger.info("Received GET request for home endpoint")
-    return {"message": "Murder Agent API is running"}
+    return {"message": "Investigation Agent API is running"}
 
 
 # Helper function to create generic agent endpoint
@@ -436,13 +436,13 @@ async def surveillance_agent_endpoint(request: GenericAgentRequest):
 async def theft_agent_endpoint(request: GenericAgentRequest):
     return await create_agent_endpoint("theft", theft_agent, theft_conversation_states)(request)
 
-@app.post("/api/antiSmuggle", response_model=GenericAgentResponse)
+@app.post("/api/antismuggle", response_model=GenericAgentResponse)
 async def antiSmuggle_agent_endpoint(request: GenericAgentRequest):
-    return await create_agent_endpoint("antiSmuggle", anti_smuggling, anti_smuggling_states)(request)
+    return await create_agent_endpoint("antismuggle", anti_smuggling, anti_smuggling_states)(request)
 
-@app.post("/api/customsBorder", response_model=GenericAgentResponse)
+@app.post("/api/customsborder", response_model=GenericAgentResponse)
 async def customsBorder_agent_endpoint(request: GenericAgentRequest):
-    return await create_agent_endpoint("customsBorder", customs_border, customs_border_states)(request)
+    return await create_agent_endpoint("customsborder", customs_border, customs_border_states)(request)
 
 
 class GenericPDFGenerator:
@@ -775,17 +775,17 @@ async def download_surveillance_pdf(request: PDFDownloadRequest):
 async def download_theft_pdf(request: PDFDownloadRequest):
     return await create_pdf_download_endpoint("theft", theft_conversation_states)(request)
 
-@app.post("/api/anti-smuggling/download-pdf")
-async def download_theft_pdf(request: PDFDownloadRequest):
-    return await create_pdf_download_endpoint("theft", anti_smuggling_states)(request)
+@app.post("/api/antismuggle/download-pdf")
+async def download_antiSmuggling_pdf(request: PDFDownloadRequest):
+    return await create_pdf_download_endpoint("antismuggle", anti_smuggling_states)(request)
 
-@app.post("/api/customs-border/download-pdf")
-async def download_theft_pdf(request: PDFDownloadRequest):
-    return await create_pdf_download_endpoint("theft", customs_border_states)(request)
+@app.post("/api/customsborder/download-pdf")
+async def download_customs_pdf(request: PDFDownloadRequest):
+    return await create_pdf_download_endpoint("customsborder", customs_border_states)(request)
 
 if __name__ == "__main__":
     import uvicorn
-    logger.info("Starting Murder Agent API server on port 5001")
+    logger.info("Starting Investigation Agent API server on port 5001")
     uvicorn.run(
         "app:app",
         host="0.0.0.0",

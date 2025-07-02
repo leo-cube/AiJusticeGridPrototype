@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 # Configuration
-PORT = 8080
+PORT = 8002
 DIRECTORY = Path(__file__).parent / "src"
 
 class CustomHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):

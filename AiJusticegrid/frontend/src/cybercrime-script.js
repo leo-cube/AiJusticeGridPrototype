@@ -7,79 +7,57 @@ let isAnalysisComplete = false;
 
 // API Configuration
 const API_BASE_URL = 'http://localhost:5001';
-const API_ENDPOINT = `${API_BASE_URL}/api/cybercrime`;
+const API_ENDPOINT = `${API_BASE_URL}/api/cyber`;
 
 // Session management
 const SESSION_KEY = 'aiJusticeGrid_session';
 
-// Step names for progress tracking
-const stepNames = [
-    'Case ID',
-    'Date of Incident',
-    'Attribution Method',
-    'Damage Description',
-    'Suspect Information',
-    'Suspect Identification Basis',
-    'Suspected Motive',
-    'Affected Assets',
-    'Evidence Preservation',
-    'Evidence Collection Procedures',
-    'Timeline of Events',
-    'Type of Cybercrime',
-    'Compromised Assets',
-    'Forensic Resources'
-];
-
-// Initialize the application
+// Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
-    // Check authentication
     checkAuthentication();
-
-    // Setup event listeners
+    initializeUserInfo();
+    checkSystemStatus();
     setupEventListeners();
-
-    // Check server status
-    checkServerStatus();
-
-    // Load user info
-    loadUserInfo();
 });
 
 function checkAuthentication() {
     const session = getSession();
     if (!session || !session.isValid) {
-        // User is not authenticated, redirect to login
         window.location.href = 'login.html';
         return;
     }
 }
 
 function getSession() {
-    let session = null;
-
-    // Check localStorage first (remember me)
-    const localSession = localStorage.getItem(SESSION_KEY);
-    if (localSession) {
-        session = JSON.parse(localSession);
-    }
-
-    // Check sessionStorage if no local session
-    if (!session) {
-        const sessionData = sessionStorage.getItem(SESSION_KEY);
+    try {
+        const sessionData = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
         if (sessionData) {
-            session = JSON.parse(sessionData);
+            const session = JSON.parse(sessionData);
+            if (session.expiresAt && Date.now() < session.expiresAt) {
+                return session;
+            }
+        }
+    } catch (error) {
+        console.error('Error reading session:', error);
+    }
+    return null;
+}
+
+function initializeUserInfo() {
+    const session = getSession();
+    if (session) {
+        const userName = document.getElementById('userName');
+        if (userName) {
+            userName.textContent = session.username;
         }
     }
+}
 
-    // Validate session
-    if (session && session.expiresAt > Date.now()) {
-        session.isValid = true;
-        return session;
+function logout() {
+    if (confirm('Are you sure you want to logout? Any unsaved progress will be lost.')) {
+        clearSession();
+        window.location.href = 'login.html';
     }
-
-    // Clear invalid session
-    clearSession();
-    return null;
 }
 
 function clearSession() {
@@ -87,75 +65,62 @@ function clearSession() {
     sessionStorage.removeItem(SESSION_KEY);
 }
 
-function loadUserInfo() {
-    const session = getSession();
-    if (session && session.username) {
-        const userName = document.getElementById('userName');
-        if (userName) {
-            // Extract username from email (everything before @)
-            const displayName = session.username.split('@')[0];
-            userName.textContent = `Detective ${displayName.charAt(0).toUpperCase() + displayName.slice(1)}`;
-        }
+function goBack() {
+    if (confirm('Are you sure you want to go back to the dashboard? Any unsaved progress will be lost.')) {
+        window.location.href = 'dashboard.html';
     }
 }
 
-// Setup event listeners
 function setupEventListeners() {
-    const messageInput = document.getElementById('messageInput');
-    const sendBtn = document.getElementById('sendBtn');
-
     // Enter key to send message
-    messageInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-
-    // Auto-resize input and enable/disable send button
-    messageInput.addEventListener('input', function() {
-        const hasText = this.value.trim().length > 0;
-        sendBtn.disabled = !hasText || isWaitingForResponse;
-    });
-}
-
-// Check server status
-async function checkServerStatus() {
-    try {
-        const response = await fetch(API_ENDPOINT, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                question: 'ping'
-            })
+    const messageInput = document.getElementById('messageInput');
+    if (messageInput) {
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
         });
 
-        if (response.ok) {
-            updateStatus('connected', 'Connected');
-        } else {
-            updateStatus('error', 'Server Error');
-        }
-    } catch (error) {
-        updateStatus('error', 'Disconnected');
-        console.error('Server connection failed:', error);
+        messageInput.addEventListener('input', function() {
+            const sendBtn = document.getElementById('sendBtn');
+            if (sendBtn) {
+                sendBtn.disabled = this.value.trim() === '' || isWaitingForResponse;
+            }
+        });
     }
 }
 
-// Update connection status
+async function checkSystemStatus() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/health`);
+        const data = await response.json();
+        
+        if (data.status === 'healthy') {
+            updateStatus('connected', 'System Online');
+        } else {
+            updateStatus('error', 'System Error');
+        }
+    } catch (error) {
+        console.error('Health check failed:', error);
+        updateStatus('error', 'Connection Failed');
+    }
+}
+
 function updateStatus(status, text) {
     const statusDot = document.getElementById('statusDot');
     const statusText = document.getElementById('statusText');
-
-    statusDot.className = `status-dot ${status}`;
-    statusText.textContent = text;
+    
+    if (statusDot && statusText) {
+        statusDot.className = `status-dot ${status}`;
+        statusText.textContent = text;
+    }
 }
 
 // Start investigation
 async function startInvestigation() {
     showLoading(true);
-
+    
     try {
         const response = await fetch(API_ENDPOINT, {
             method: 'POST',
@@ -256,31 +221,28 @@ async function sendMessage() {
     } finally {
         showLoading(false);
         isWaitingForResponse = false;
+        document.getElementById('sendBtn').disabled = false;
     }
 }
 
-// Add message to chat
 function addMessage(sender, content) {
     const chatMessages = document.getElementById('chatMessages');
     const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${sender}`;
-
-    const avatar = document.createElement('div');
-    avatar.className = 'message-avatar';
-    avatar.innerHTML = sender === 'agent' ? '<i class="fas fa-shield-virus"></i>' : '<i class="fas fa-user"></i>';
-
-    const messageContent = document.createElement('div');
-    messageContent.className = 'message-content';
-    messageContent.innerHTML = formatMessage(content);
-
-    messageDiv.appendChild(avatar);
-    messageDiv.appendChild(messageContent);
-
+    messageDiv.className = `message ${sender}-message`;
+    
+    const timestamp = new Date().toLocaleTimeString();
+    
+    messageDiv.innerHTML = `
+        <div class="message-content">
+            <div class="message-text">${formatMessage(content)}</div>
+            <div class="message-time">${timestamp}</div>
+        </div>
+    `;
+    
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Format message content
 function formatMessage(content) {
     // Convert markdown-style formatting to HTML
     return content
@@ -289,26 +251,30 @@ function formatMessage(content) {
         .replace(/\n/g, '<br>');
 }
 
-// Update progress
 function updateProgress() {
     const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
-    const currentStepInfo = document.getElementById('currentStepInfo');
-
+    const progressCounter = document.getElementById('progressCounter');
+    
     const percentage = (currentStep / totalSteps) * 100;
-    progressFill.style.width = `${percentage}%`;
-    progressText.textContent = `${currentStep}/${totalSteps} Steps Completed`;
-
-    if (currentStep < totalSteps) {
-        const stepName = stepNames[currentStep] || 'Processing';
-        currentStepInfo.innerHTML = `<i class="fas fa-clipboard-list"></i><span>Current: ${stepName}</span>`;
+    
+    if (progressFill) {
+        progressFill.style.width = `${percentage}%`;
+    }
+    
+    if (progressCounter) {
+        if (currentStep >= totalSteps) {
+            progressCounter.textContent = 'Complete';
+        } else {
+            progressCounter.textContent = `Step ${currentStep + 1} of ${totalSteps}`;
+        }
     }
 }
 
-// Show/hide loading
 function showLoading(show) {
     const loadingOverlay = document.getElementById('loadingOverlay');
-    loadingOverlay.style.display = show ? 'flex' : 'none';
+    if (loadingOverlay) {
+        loadingOverlay.style.display = show ? 'flex' : 'none';
+    }
 }
 
 // Reset conversation
@@ -317,17 +283,17 @@ function resetConversation() {
         sessionId = null;
         currentStep = 0;
         isAnalysisComplete = false;
-
+        
         // Clear chat messages
         const chatMessages = document.getElementById('chatMessages');
         chatMessages.innerHTML = `
             <div class="welcome-message">
                 <div class="agent-avatar">
-                    <i class="fas fa-shield-virus"></i>
+                    <i class="fas fa-cyber-check-alt"></i>
                 </div>
                 <div class="welcome-content">
-                    <h2>Welcome to Cyber Crime Investigation Assistant</h2>
-                    <p>I'm your specialized AI assistant for cybercrime investigations. I'll guide you through a comprehensive digital forensics analysis process.</p>
+                    <h2>Cybercrime Agent</h2>
+                    <p>I'm your AI assistant specialized in cybercrime investigations. I'll help you analyze financial crimes, track suspicious transactions, and provide comprehensive investigative support.</p>
                     <button class="start-btn" onclick="startInvestigation()">
                         <i class="fas fa-play"></i>
                         Start Investigation
@@ -335,8 +301,9 @@ function resetConversation() {
                 </div>
             </div>
         `;
-
-        // Hide progress and input sections
+        
+        // Show welcome message and hide other sections
+        document.querySelector('.welcome-message').style.display = 'flex';
         document.getElementById('progressSection').style.display = 'none';
         document.getElementById('inputSection').style.display = 'none';
         document.getElementById('downloadBtn').style.display = 'none';
@@ -358,7 +325,7 @@ async function downloadPDF() {
     try {
         showLoading(true);
 
-        const response = await fetch(`${API_BASE_URL}/api/cybercrime/download-pdf`, {
+        const response = await fetch(`${API_BASE_URL}/api/cyber/download-pdf`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -373,7 +340,7 @@ async function downloadPDF() {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Cybercrime_Investigation_Report_${new Date().toISOString().slice(0, 10)}.pdf`;
+            a.download = `CybercrimeAgent_Investigation_Report_${new Date().toISOString().slice(0, 10)}.pdf`;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
@@ -382,38 +349,19 @@ async function downloadPDF() {
             throw new Error('Failed to generate PDF report');
         }
     } catch (error) {
-        console.error('Error downloading report:', error);
-        alert('Failed to download report. Please try again.');
+        console.error('Error downloading PDF:', error);
+        alert('Failed to download PDF report. Please try again.');
     } finally {
         showLoading(false);
     }
 }
 
-// Navigation functions
-function logout() {
-    if (confirm('Are you sure you want to logout? Any unsaved progress will be lost.')) {
-        clearSession();
-        window.location.href = 'login.html';
-    }
-}
-
-function goBack() {
-    if (confirm('Are you sure you want to go back to the dashboard? Any unsaved progress will be lost.')) {
-        window.location.href = 'dashboard.html';
-    }
-}
-
+// Show help modal
 function showHelp() {
     document.getElementById('helpModal').style.display = 'flex';
 }
 
+// Close help modal
 function closeHelp() {
     document.getElementById('helpModal').style.display = 'none';
 }
-
-// Close modal when clicking outside
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('modal-overlay')) {
-        closeHelp();
-    }
-});

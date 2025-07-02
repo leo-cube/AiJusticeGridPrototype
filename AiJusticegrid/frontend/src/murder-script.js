@@ -7,7 +7,7 @@ let isAnalysisComplete = false;
 
 // API Configuration
 const API_BASE_URL = 'http://localhost:5001';
-const API_ENDPOINT = `${API_BASE_URL}/api/customsborder`;
+const API_ENDPOINT = `${API_BASE_URL}/api/murder`;
 
 // Session management
 const SESSION_KEY = 'aiJusticeGrid_session';
@@ -289,11 +289,11 @@ function resetConversation() {
         chatMessages.innerHTML = `
             <div class="welcome-message">
                 <div class="agent-avatar">
-                    <i class="fas fa-customs-check-alt"></i>
+                    <i class="fas fa-murder-check-alt"></i>
                 </div>
                 <div class="welcome-content">
-                    <h2>Customs Border Protection Agent</h2>
-                    <p>I'm your AI assistant specialized in customs border protection investigations. I'll help you analyze financial crimes, track suspicious transactions, and provide comprehensive investigative support.</p>
+                    <h2>Murder Agent</h2>
+                    <p>I'm your AI assistant specialized in murder investigations. I'll help you analyze financial crimes, track suspicious transactions, and provide comprehensive investigative support.</p>
                     <button class="start-btn" onclick="startInvestigation()">
                         <i class="fas fa-play"></i>
                         Start Investigation
@@ -325,7 +325,7 @@ async function downloadPDF() {
     try {
         showLoading(true);
 
-        const response = await fetch(`${API_BASE_URL}/api/customsborder/download-pdf`, {
+        const response = await fetch(`${API_BASE_URL}/api/murder/download-pdf`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -340,7 +340,7 @@ async function downloadPDF() {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `CustomsBorderProtectionAgent_Investigation_Report_${new Date().toISOString().slice(0, 10)}.pdf`;
+            a.download = `MurderAgent_Investigation_Report_${new Date().toISOString().slice(0, 10)}.pdf`;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);

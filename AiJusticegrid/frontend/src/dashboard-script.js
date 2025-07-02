@@ -78,7 +78,7 @@ function setupEventListeners() {
         // Ctrl+2 for Cyber Crime Agent
         if (e.ctrlKey && e.key === '2') {
             e.preventDefault();
-            selectAgent('cybercrime');
+            selectAgent('cyber');
         }
         // Escape to close modals
         if (e.key === 'Escape') {
@@ -87,40 +87,40 @@ function setupEventListeners() {
     });
 }
 
-async function checkSystemStatus() {
-    try {
-        // Check Murder Agent
-        const murderResponse = await fetch('http://localhost:5001/api/murder', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                question: 'ping'
-            })
-        });
+// async function checkSystemStatus() {
+//     try {
+//         // Check Murder Agent
+//         const murderResponse = await fetch('http://localhost:5001/api/murder', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify({
+//                 question: 'ping'
+//             })
+//         });
 
-        // Check Cyber Crime Agent
-        const cyberResponse = await fetch('http://localhost:5001/api/cybercrime', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                question: 'ping'
-            })
-        });
+//         // Check Cyber Crime Agent
+//         const cyberResponse = await fetch('http://localhost:5001/api/cyber', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify({
+//                 question: 'ping'
+//             })
+//         });
 
-        if (murderResponse.ok && cyberResponse.ok) {
-            updateSystemStatus('online', 'System Online');
-        } else {
-            updateSystemStatus('warning', 'Partial Service');
-        }
-    } catch (error) {
-        console.error('System status check failed:', error);
-        updateSystemStatus('offline', 'System Offline');
-    }
-}
+//         if (murderResponse.ok && cyberResponse.ok) {
+//             updateSystemStatus('online', 'System Online');
+//         } else {
+//             updateSystemStatus('warning', 'Partial Service');
+//         }
+//     } catch (error) {
+//         console.error('System status check failed:', error);
+//         updateSystemStatus('offline', 'System Offline');
+//     }
+// }
 
 function updateSystemStatus(status, text) {
     const statusDot = document.getElementById('statusDot');
@@ -140,8 +140,12 @@ function selectAgent(agentType) {
     setTimeout(() => {
         if (agentType === 'murder') {
             window.location.href = 'index.html';
-        } else if (agentType === 'cybercrime') {
+        } else if (agentType === 'cyber') {
             window.location.href = 'cybercrime.html';
+        } else if (agentType === 'antismuggle') {
+            window.location.href = 'antismuggling.html';
+        } else if (agentType === 'customsborder') {
+            window.location.href = 'customborder.html';
         } else if (agentType === 'humantrafficking') {
             window.location.href = 'humantrafficking.html';
         } else if (agentType === 'narcotics') {
@@ -165,11 +169,30 @@ function showLoadingModal(agentType) {
     const loadingText = document.getElementById('loadingText');
 
     if (modal && loadingText) {
-        let agentName = agentType === 'murder' ? 'Murder Investigation Agent' : 'Cyber Crime Investigation Agent';
+        // Map agent types to display names
+        const agentDisplayNames = {
+            murder: "Murder Agent",
+            cyber: "Cybercrime Agent",
+            antismuggle: "Anti-Smuggling Agent",
+            customsborder: "Customs & Border Agent",
+            humantrafficking: "Human Trafficking Agent",
+            narcotics: "Narcotics Agent",
+            moneylaundering: "Money Laundering Agent",
+            onlinefraud: "Online Fraud Agent",
+            sexualassault: "Sexual Assault Agent",
+            surveillance: "Surveillance Agent",
+            theft: "Theft Agent"
+        };
+
+        // Fallback to generic if not matched
+        const agentName = agentDisplayNames[agentType] || "Investigation Agent";
+
+        // Update modal
         loadingText.textContent = `Initializing ${agentName}...`;
         modal.style.display = 'flex';
     }
 }
+
 
 function closeModals() {
     const modals = document.querySelectorAll('.modal-overlay');
@@ -189,14 +212,14 @@ function logout() {
     }
 }
 
-function showHelp() {
-    alert('Help:\n\n' +
-          '• Select an investigation agent to begin case analysis\n' +
-          '• Murder Agent: For homicide investigations\n' +
-          '• Cyber Crime Agent: For cybercrime investigations\n' +
-          '• Use Ctrl+1 for Murder Agent, Ctrl+2 for Cyber Crime Agent\n' +
-          '• Contact system administrator for technical support');
-}
+// function showHelp() {
+//     alert('Help:\n\n' +
+//           '• Select an investigation agent to begin case analysis\n' +
+//           '• Murder Agent: For homicide investigations\n' +
+//           '• Cyber Crime Agent: For cybercrime investigations\n' +
+//           '• Use Ctrl+1 for Murder Agent, Ctrl+2 for Cyber Crime Agent\n' +
+//           '• Contact system administrator for technical support');
+// }
 
 function showAbout() {
     alert('AiJusticeGrid v2.1.0\n\n' +

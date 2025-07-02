@@ -19,7 +19,7 @@ def test_murder_agent():
         return False
 
 def test_cybercrime_agent():
-    url = "http://localhost:5001/api/cybercrime"
+    url = "http://localhost:5001/api/cyber"
     data = {
         "question": "ping"
     }

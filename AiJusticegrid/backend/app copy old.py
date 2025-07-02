@@ -1993,7 +1993,7 @@ async def murder_agent_endpoint(request: MurderAgentRequest):
             }
         )
 
-@app.post("/api/cybercrime", response_model=CyberCrimeAgentResponse)
+@app.post("/api/cyber", response_model=CyberCrimeAgentResponse)
 async def cybercrime_agent_endpoint(request: CyberCrimeAgentRequest):
     """Main endpoint for cybercrime agent interactions"""
     try:
@@ -2209,7 +2209,7 @@ async def download_murder_pdf(request: PDFDownloadRequest):
             }
         )
 
-@app.post("/api/cybercrime/download-pdf")
+@app.post("/api/cyber/download-pdf")
 async def download_cybercrime_pdf(request: PDFDownloadRequest):
     """Generate and download PDF report for cybercrime investigation"""
     try:

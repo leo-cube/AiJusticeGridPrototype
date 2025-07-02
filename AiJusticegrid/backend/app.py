@@ -1,6 +1,8 @@
 import logging
 import uuid
 import os
+from dotenv import load_dotenv
+load_dotenv()
 import requests
 import json
 from datetime import datetime
@@ -62,9 +64,9 @@ else:
     logger.warning(f"Frontend path not found: {frontend_path}")
 
 # NVIDIA API Configuration
-NVIDIA_API_KEY = "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"
-NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1"
-NVIDIA_MODEL = "nvidia/llama-3.1-nemotron-ultra-253b-v1"
+NVIDIA_API_KEY = os.getenv("OPENAI_API_KEY")
+NVIDIA_BASE_URL = os.getenv("NVIDIA_BASE_URL")
+NVIDIA_MODEL = os.getenv("NVIDIA_MODEL")
 
 # Initialize OpenAI client for NVIDIA (will be initialized in agent classes)
 nvidia_client = None

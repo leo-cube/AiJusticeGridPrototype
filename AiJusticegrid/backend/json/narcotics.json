@@ -70,11 +70,5 @@
     "message": "**[LIVE DATA ANALYSIS]**\n\nAdditional observations or intel?",
     "field": "additional_notes",
     "next_step": "analysis"
-  },
-  {
-    "id": "analysis",
-    "message": "**[LIVE DATA ANALYSIS]**\n\nThank you. I'll now analyze these details for your report.",
-    "field": null,
-    "next_step": null
   }
 ]

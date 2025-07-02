@@ -71,11 +71,5 @@
     "message": "**[LIVE DATA ANALYSIS]**\n\nAny other relevant context or observations?",
     "field": "additional_notes",
     "next_step": "analysis"
-  },
-  {
-    "id": "analysis",
-    "message": "**[LIVE DATA ANALYSIS]**\n\nThank you. I'll now analyze the financial data and prepare your anti–money laundering report.",
-    "field": null,
-    "next_step": null
   }
 ]

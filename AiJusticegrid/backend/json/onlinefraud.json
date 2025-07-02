@@ -71,11 +71,5 @@
     "message": "**[LIVE DATA ANALYSIS]**\n\nAny additional context or observations?",
     "field": "additional_notes",
     "next_step": "analysis"
-  },
-  {
-    "id": "analysis",
-    "message": "**[LIVE DATA ANALYSIS]**\n\nThank you. I'll analyze all provided data and generate your fraud investigation report.",
-    "field": null,
-    "next_step": null
   }
 ]

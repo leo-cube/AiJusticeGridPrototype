@@ -76,11 +76,5 @@
     "message": "**[LIVE DATA ANALYSIS]**\n\nAdditional leads or background information?",
     "field": "additional_notes",
     "next_step": "analysis"
-  },
-  {
-    "id": "analysis",
-    "message": "**[LIVE DATA ANALYSIS]**\n\nThank you. I'll compile and analyze these details now.",
-    "field": null,
-    "next_step": null
   }
 ]

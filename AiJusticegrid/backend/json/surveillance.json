@@ -64,11 +64,5 @@
     "message": "**[LIVE DATA ANALYSIS]**\n\nAny other notes or situational context?",
     "field": "additional_notes",
     "next_step": "analysis"
-  },
-  {
-    "id": "analysis",
-    "message": "**[LIVE DATA ANALYSIS]**\n\nThank you. I'll review and analyze all surveillance data now.",
-    "field": null,
-    "next_step": null
   }
 ]

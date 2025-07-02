@@ -504,36 +504,34 @@ class GenericPDFGenerator:
             # Build the PDF
             doc.build(story)
 
-            # Ensure buffer is at the beginning and validate PDF content
+            # Validate PDF content
             buffer.seek(0)
-
-            # Validate that we have PDF content
             pdf_content = buffer.getvalue()
-            if len(pdf_content) < 100 or not pdf_content.startswith(b'%PDF'):
-                raise ValueError("Generated PDF content is invalid or too small")
 
-            # Reset buffer position for reading
+            # Check if PDF is valid
+            if len(pdf_content) < 100:
+                raise ValueError(f"Generated PDF is too small: {len(pdf_content)} bytes")
+
+            if not pdf_content.startswith(b'%PDF'):
+                raise ValueError("Generated content is not a valid PDF")
+
+            logger.info(f"PDF validation successful: {len(pdf_content)} bytes, starts with PDF header")
             buffer.seek(0)
             return buffer
 
         except Exception as e:
             logger.error(f"Error generating PDF: {str(e)}")
             # Create a simple error PDF
-            error_buffer = BytesIO()
+            buffer = BytesIO()
             try:
-                doc = SimpleDocTemplate(error_buffer, pagesize=A4)
+                doc = SimpleDocTemplate(buffer, pagesize=A4)
                 styles = getSampleStyleSheet()
                 story = [Paragraph(f"Error generating PDF: {str(e)}", styles['Title'])]
                 doc.build(story)
-                error_buffer.seek(0)
-                return error_buffer
-            except Exception as inner_e:
-                logger.error(f"Error creating error PDF: {str(inner_e)}")
-                # Return a minimal PDF with error message
-                error_buffer = BytesIO()
-                error_buffer.write(b'%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] >>\nendobj\nxref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \ntrailer\n<< /Size 4 /Root 1 0 R >>\nstartxref\n174\n%%EOF')
-                error_buffer.seek(0)
-                return error_buffer
+            except:
+                buffer.write(f"Error generating PDF: {str(e)}".encode('utf-8'))
+            buffer.seek(0)
+            return buffer
 
     def format_generic_case_details(self, case_data: Dict[str, Any]) -> list:
         """Format case details for the PDF with proper text wrapping"""
@@ -699,51 +697,35 @@ class GenericPDFGenerator:
         if not text:
             return ""
 
-        try:
-            clean_text = str(text).strip()
+        clean_text = str(text).strip()
 
-            # Handle encoding issues
-            if isinstance(clean_text, bytes):
-                clean_text = clean_text.decode('utf-8', errors='replace')
+        # Remove markdown headers (###, ##, #)
+        clean_text = clean_text.replace('###', '')
+        clean_text = clean_text.replace('##', '')
+        clean_text = clean_text.replace('#', '')
 
-            # Remove markdown headers (###, ##, #)
-            clean_text = clean_text.replace('###', '')
-            clean_text = clean_text.replace('##', '')
-            clean_text = clean_text.replace('#', '')
+        # Remove bold and italic markdown
+        clean_text = clean_text.replace('**', '')
+        clean_text = clean_text.replace('*', '')
 
-            # Remove bold and italic markdown
-            clean_text = clean_text.replace('**', '')
-            clean_text = clean_text.replace('*', '')
+        # Remove other common markdown symbols
+        clean_text = clean_text.replace('`', '')
+        clean_text = clean_text.replace('~~', '')
 
-            # Remove other common markdown symbols
-            clean_text = clean_text.replace('`', '')
-            clean_text = clean_text.replace('~~', '')
+        # Remove specific unwanted headers
+        clean_text = clean_text.replace('[LIVE DATA ANALYSIS]', '')
 
-            # Remove specific unwanted headers
-            clean_text = clean_text.replace('[LIVE DATA ANALYSIS]', '')
+        # Clean up extra whitespace while preserving line structure
+        lines = clean_text.split('\n')
+        cleaned_lines = []
+        for line in lines:
+            cleaned_line = line.strip()
+            if cleaned_line:
+                cleaned_lines.append(cleaned_line)
+            elif cleaned_lines and cleaned_lines[-1]:  # Preserve section breaks
+                cleaned_lines.append('')
 
-            # Remove problematic characters that might cause PDF issues
-            clean_text = clean_text.replace('\x00', '')  # Remove null bytes
-            clean_text = clean_text.replace('\r\n', '\n')  # Normalize line endings
-            clean_text = clean_text.replace('\r', '\n')
-
-            # Clean up extra whitespace while preserving line structure
-            lines = clean_text.split('\n')
-            cleaned_lines = []
-            for line in lines:
-                cleaned_line = line.strip()
-                if cleaned_line:
-                    # Escape any remaining problematic characters for PDF
-                    cleaned_line = cleaned_line.encode('ascii', errors='ignore').decode('ascii')
-                    if cleaned_line:  # Only add if there's content after encoding
-                        cleaned_lines.append(cleaned_line)
-                elif cleaned_lines and cleaned_lines[-1]:  # Preserve section breaks
-                    cleaned_lines.append('')
-
-            return '\n'.join(cleaned_lines)
-        except Exception as e:
-            logger.error(f"Error cleaning markdown formatting: {str(e)}")
-            return "Text formatting error occurred"
+        return '\n'.join(cleaned_lines)
 
     def create_generic_styles(self):
         """Create professional styles for generic investigation PDFs"""
@@ -858,13 +840,19 @@ def create_pdf_download_endpoint(agent_name: str, conversation_states: Dict):
                 )
 
             # Generate PDF
-            logger.info(f"Generating PDF for {agent_name} agent, session: {session_id}")
+            logger.info(f"Starting PDF generation for {agent_name} agent, session: {session_id}")
             pdf_generator = GenericPDFGenerator()
             pdf_buffer = pdf_generator.generate_generic_pdf(agent_name, case_data, analysis_text)
 
-            # Validate PDF buffer
-            if not pdf_buffer or pdf_buffer.tell() == 0:
-                raise ValueError("PDF generation failed - empty buffer")
+            # Validate PDF was generated
+            if not pdf_buffer:
+                raise ValueError("PDF generation failed - no buffer returned")
+
+            pdf_size = len(pdf_buffer.getvalue())
+            logger.info(f"PDF generated successfully: {pdf_size} bytes")
+
+            if pdf_size < 100:
+                raise ValueError(f"PDF too small ({pdf_size} bytes) - likely corrupted")
 
             # Generate filename
             case_id = case_data.get('case_id', 'Unknown')
@@ -872,19 +860,22 @@ def create_pdf_download_endpoint(agent_name: str, conversation_states: Dict):
             agent_title = agent_name.replace('_', ' ').title().replace(' ', '')
             filename = f"{agent_title}_Investigation_Report_{case_id}_{timestamp}.pdf"
 
-            # Log PDF generation success
-            pdf_size = len(pdf_buffer.getvalue())
-            logger.info(f"PDF generated successfully for {agent_name}: {filename}, size: {pdf_size} bytes")
+            logger.info(f"PDF filename: {filename}")
 
             # Return PDF file as streaming response
-            # Reset buffer position to beginning
+            # Reset buffer position and get content
             pdf_buffer.seek(0)
+            pdf_content = pdf_buffer.getvalue()
+
+            # Create a new BytesIO with the content for streaming
+            response_buffer = BytesIO(pdf_content)
+
             return StreamingResponse(
-                pdf_buffer,
+                response_buffer,
                 media_type='application/pdf',
                 headers={
                     "Content-Disposition": f"attachment; filename={filename}",
-                    "Content-Length": str(pdf_size)
+                    "Content-Length": str(len(pdf_content))
                 }
             )
 
@@ -946,6 +937,47 @@ async def download_antiSmuggling_pdf(request: PDFDownloadRequest):
 @app.post("/api/customsborder/download-pdf")
 async def download_customs_pdf(request: PDFDownloadRequest):
     return await create_pdf_download_endpoint("customsborder", customs_border_states)(request)
+
+# Test endpoint for PDF generation debugging
+@app.get("/api/test-pdf")
+async def test_pdf_generation():
+    """Test endpoint to generate a simple PDF for debugging"""
+    try:
+        if not REPORTLAB_AVAILABLE:
+            return {"error": "ReportLab not available"}
+
+        # Create test data
+        test_case_data = {
+            "case_id": "TEST-001",
+            "test_field": "This is a test case for PDF debugging"
+        }
+
+        test_analysis = "This is a test analysis for PDF generation debugging."
+
+        # Generate PDF
+        pdf_generator = GenericPDFGenerator()
+        pdf_buffer = pdf_generator.generate_generic_pdf("test", test_case_data, test_analysis)
+
+        # Get PDF info
+        pdf_content = pdf_buffer.getvalue()
+        pdf_size = len(pdf_content)
+
+        # Create response
+        pdf_buffer.seek(0)
+        response_buffer = BytesIO(pdf_content)
+
+        return StreamingResponse(
+            response_buffer,
+            media_type='application/pdf',
+            headers={
+                "Content-Disposition": "attachment; filename=test_pdf_debug.pdf",
+                "Content-Length": str(pdf_size)
+            }
+        )
+
+    except Exception as e:
+        logger.error(f"Test PDF generation failed: {str(e)}")
+        return {"error": f"PDF generation failed: {str(e)}"}
 
 if __name__ == "__main__":
     import uvicorn

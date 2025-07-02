@@ -1,0 +1,74 @@
+[
+  {
+    "id": "greeting",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nHello, I'm the Narcotics Agent. What is the Case ID?",
+    "field": "case_id",
+    "next_step": "date_of_operation"
+  },
+  {
+    "id": "date_of_operation",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWhen did the operation or incident occur? (YYYY-MM-DD)",
+    "field": "date_of_operation",
+    "next_step": "time_of_operation"
+  },
+  {
+    "id": "time_of_operation",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nAt what time?",
+    "field": "time_of_operation",
+    "next_step": "location"
+  },
+  {
+    "id": "location",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWhere was the location of seizure or sale?",
+    "field": "location",
+    "next_step": "substance_type"
+  },
+  {
+    "id": "substance_type",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWhat type(s) of narcotic were involved?",
+    "field": "substance_type",
+    "next_step": "quantity"
+  },
+  {
+    "id": "quantity",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWhat quantity was seized or observed?",
+    "field": "quantity",
+    "next_step": "suspects"
+  },
+  {
+    "id": "suspects",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nWho are the suspects or persons of interest?",
+    "field": "suspects",
+    "next_step": "vehicles_or_hideouts"
+  },
+  {
+    "id": "vehicles_or_hideouts",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nDescribe any vehicles or locations used.",
+    "field": "vehicles_or_hideouts",
+    "next_step": "financial_trails"
+  },
+  {
+    "id": "financial_trails",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nAny known financial transactions or payment methods?",
+    "field": "financial_trails",
+    "next_step": "evidence_collected"
+  },
+  {
+    "id": "evidence_collected",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nList all evidence (drugs, paraphernalia, ledgers).",
+    "field": "evidence_collected",
+    "next_step": "witnesses_or_informants"
+  },
+  {
+    "id": "witnesses_or_informants",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nAny witnesses or informants?",
+    "field": "witnesses_or_informants",
+    "next_step": "additional_notes"
+  },
+  {
+    "id": "additional_notes",
+    "message": "**[LIVE DATA ANALYSIS]**\n\nAdditional observations or intel?",
+    "field": "additional_notes",
+    "next_step": "analysis"
+  }
+]

@@ -9,10 +9,8 @@ import socketserver
 import webbrowser
 import sys
 from pathlib import Path
-from dotenv import load_dotenv
-load_dotenv()
 
-backend_url = os.environ.get("BACKEND_URL")
+# backend_url = os.environ.get("BACKEND_URL")
 
 # Configuration
 PORT = 8002

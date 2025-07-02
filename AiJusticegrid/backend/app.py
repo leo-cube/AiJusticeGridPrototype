@@ -117,6 +117,8 @@ onlinefraud_conversation_states = {}
 sexualassault_conversation_states = {}
 surveillance_conversation_states = {}
 theft_conversation_states = {}
+anti_smuggling_states = {}
+customs_border_states = {}
 
 class GenericAgent:
     """Generic agent class that loads configuration from JSON files"""
@@ -304,6 +306,8 @@ onlinefraud_agent = GenericAgent("onlinefraud")
 sexualassault_agent = GenericAgent("sexualassualt")  # Note: keeping original filename spelling
 surveillance_agent = GenericAgent("surveillance")
 theft_agent = GenericAgent("theft")
+anti_smuggling = GenericAgent("antiSmuggle")
+customs_border = GenericAgent("customsBorder")
 
 # Health check endpoint
 @app.get("/health")
@@ -323,7 +327,9 @@ async def health_check():
             "onlinefraud_agent": "active",
             "sexualassault_agent": "active",
             "surveillance_agent": "active",
-            "theft_agent": "active"
+            "theft_agent": "active",
+            "anti_smuggling" : "active",
+            "customs_border" : "active"
         }
     }
 
@@ -429,6 +435,14 @@ async def surveillance_agent_endpoint(request: GenericAgentRequest):
 @app.post("/api/theft", response_model=GenericAgentResponse)
 async def theft_agent_endpoint(request: GenericAgentRequest):
     return await create_agent_endpoint("theft", theft_agent, theft_conversation_states)(request)
+
+@app.post("/api/antiSmuggle", response_model=GenericAgentResponse)
+async def antiSmuggle_agent_endpoint(request: GenericAgentRequest):
+    return await create_agent_endpoint("antiSmuggle", anti_smuggling, anti_smuggling_states)(request)
+
+@app.post("/api/customsBorder", response_model=GenericAgentResponse)
+async def customsBorder_agent_endpoint(request: GenericAgentRequest):
+    return await create_agent_endpoint("customsBorder", customs_border, customs_border_states)(request)
 
 
 class GenericPDFGenerator:
@@ -760,6 +774,14 @@ async def download_surveillance_pdf(request: PDFDownloadRequest):
 @app.post("/api/theft/download-pdf")
 async def download_theft_pdf(request: PDFDownloadRequest):
     return await create_pdf_download_endpoint("theft", theft_conversation_states)(request)
+
+@app.post("/api/anti-smuggling/download-pdf")
+async def download_theft_pdf(request: PDFDownloadRequest):
+    return await create_pdf_download_endpoint("theft", anti_smuggling_states)(request)
+
+@app.post("/api/customs-border/download-pdf")
+async def download_theft_pdf(request: PDFDownloadRequest):
+    return await create_pdf_download_endpoint("theft", customs_border_states)(request)
 
 if __name__ == "__main__":
     import uvicorn

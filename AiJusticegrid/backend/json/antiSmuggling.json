@@ -1,0 +1,92 @@
+[
+    {
+        "id": "greeting",
+        "message": "**[BORDER OPERATIONS AI]**\n\nHello, I'm the Anti-Smuggling Agent, an AI assistant supporting Customs and Border Protection operations. I'm here to help gather intelligence and assess potential smuggling activity. Let's begin with the case file. What is the Case ID?",
+        "field": "case_id",
+        "next_step": "date_of_incident"
+    },
+    {
+        "id": "date_of_incident",
+        "message": "**[BORDER OPERATIONS AI]**\n\nWhen did this smuggling-related incident occur? (Please enter the date in YYYY-MM-DD or MM/DD/YYYY format.)",
+        "field": "date_of_incident",
+        "next_step": "port_of_entry"
+    },
+    {
+        "id": "port_of_entry",
+        "message": "**[BORDER OPERATIONS AI]**\n\nAt which port of entry or border location did this occur?",
+        "field": "port_of_entry",
+        "next_step": "type_of_smuggling"
+    },
+    {
+        "id": "type_of_smuggling",
+        "message": "**[BORDER OPERATIONS AI]**\n\nWhat type of smuggling was involved? (e.g., narcotics, human trafficking, weapons, counterfeit goods, currency, agricultural products, etc.)",
+        "field": "type_of_smuggling",
+        "next_step": "detection_method"
+    },
+    {
+        "id": "detection_method",
+        "message": "**[BORDER OPERATIONS AI]**\n\nHow was the smuggling attempt detected? (e.g., canine alert, x-ray scan, tip-off, officer suspicion, secondary inspection)",
+        "field": "detection_method",
+        "next_step": "suspect_information"
+    },
+    {
+        "id": "suspect_information",
+        "message": "**[BORDER OPERATIONS AI]**\n\nPlease provide details about the suspect(s). Include name, nationality, and any identification provided.",
+        "field": "suspect_information",
+        "next_step": "travel_document_review"
+    },
+    {
+        "id": "travel_document_review",
+        "message": "**[BORDER OPERATIONS AI]**\n\nWere the suspect’s travel documents verified? Any inconsistencies or red flags?",
+        "field": "travel_document_review",
+        "next_step": "vehicle_or_conveyance"
+    },
+    {
+        "id": "vehicle_or_conveyance",
+        "message": "**[BORDER OPERATIONS AI]**\n\nWhat type of vehicle, container, or mode of transport was used in the smuggling attempt? Include license plate or shipping ID if available.",
+        "field": "vehicle_or_conveyance",
+        "next_step": "contraband_description"
+    },
+    {
+        "id": "contraband_description",
+        "message": "**[BORDER OPERATIONS AI]**\n\nDescribe the contraband or smuggled items. Include quantity, packaging method, and concealment technique.",
+        "field": "contraband_description",
+        "next_step": "interview_summary"
+    },
+    {
+        "id": "interview_summary",
+        "message": "**[BORDER OPERATIONS AI]**\n\nWas the suspect interviewed? Summarize the key statements or admissions made during the interview.",
+        "field": "interview_summary",
+        "next_step": "surveillance_or_intel"
+    },
+    {
+        "id": "surveillance_or_intel",
+        "message": "**[BORDER OPERATIONS AI]**\n\nWas this incident linked to any prior surveillance, intelligence reports, or ongoing investigations?",
+        "field": "surveillance_or_intel",
+        "next_step": "seizure_details"
+    },
+    {
+        "id": "seizure_details",
+        "message": "**[BORDER OPERATIONS AI]**\n\nWere any assets, goods, or currency seized? Please list and describe them.",
+        "field": "seizure_details",
+        "next_step": "agency_coordination"
+    },
+    {
+        "id": "agency_coordination",
+        "message": "**[BORDER OPERATIONS AI]**\n\nWas coordination done with other agencies? (e.g., DEA, ICE, HSI, local law enforcement)",
+        "field": "agency_coordination",
+        "next_step": "case_status"
+    },
+    {
+        "id": "case_status",
+        "message": "**[BORDER OPERATIONS AI]**\n\nWhat is the current status of the case? (e.g., pending prosecution, referred for further investigation, closed)",
+        "field": "case_status",
+        "next_step": "additional_notes"
+    },
+    {
+        "id": "additional_notes",
+        "message": "**[BORDER OPERATIONS AI]**\n\nDo you have any additional notes, observations, or recommendations regarding this smuggling incident?",
+        "field": "additional_notes",
+        "next_step": "analysis"
+    }
+]

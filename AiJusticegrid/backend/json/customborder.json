@@ -1,0 +1,92 @@
+[
+    {
+        "id": "greeting",
+        "message": "**[CBP INSPECTION AI]**\n\nHello, I'm the Customs Border Agent Assistant, here to help document and analyze routine border inspections. Let's begin. What is the Inspection ID or Reference Number?",
+        "field": "inspection_id",
+        "next_step": "inspection_date"
+    },
+    {
+        "id": "inspection_date",
+        "message": "**[CBP INSPECTION AI]**\n\nWhat is the date of the inspection? (Please use YYYY-MM-DD or MM/DD/YYYY format.)",
+        "field": "inspection_date",
+        "next_step": "port_of_entry"
+    },
+    {
+        "id": "port_of_entry",
+        "message": "**[CBP INSPECTION AI]**\n\nAt which port of entry or border crossing did this inspection take place?",
+        "field": "port_of_entry",
+        "next_step": "inspection_type"
+    },
+    {
+        "id": "inspection_type",
+        "message": "**[CBP INSPECTION AI]**\n\nWhat type of inspection was conducted? (e.g., primary screening, secondary inspection, agriculture inspection, cargo inspection)",
+        "field": "inspection_type",
+        "next_step": "individual_or_company"
+    },
+    {
+        "id": "individual_or_company",
+        "message": "**[CBP INSPECTION AI]**\n\nWas this inspection related to an individual traveler or a company/entity? Please provide the name and details.",
+        "field": "individual_or_company",
+        "next_step": "citizenship_or_origin"
+    },
+    {
+        "id": "citizenship_or_origin",
+        "message": "**[CBP INSPECTION AI]**\n\nWhat is the country of citizenship or origin of the traveler or shipment?",
+        "field": "citizenship_or_origin",
+        "next_step": "purpose_of_entry"
+    },
+    {
+        "id": "purpose_of_entry",
+        "message": "**[CBP INSPECTION AI]**\n\nWhat was the stated purpose of entry? (e.g., tourism, business, import, transit, relocation)",
+        "field": "purpose_of_entry",
+        "next_step": "documents_presented"
+    },
+    {
+        "id": "documents_presented",
+        "message": "**[CBP INSPECTION AI]**\n\nWhat documents were presented for verification? (e.g., passport, visa, manifest, bill of lading, customs declaration)",
+        "field": "documents_presented",
+        "next_step": "declarations_made"
+    },
+    {
+        "id": "declarations_made",
+        "message": "**[CBP INSPECTION AI]**\n\nWere any customs declarations made? If so, please summarize what was declared.",
+        "field": "declarations_made",
+        "next_step": "items_inspected"
+    },
+    {
+        "id": "items_inspected",
+        "message": "**[CBP INSPECTION AI]**\n\nWere any goods, baggage, or cargo inspected? Provide a brief description and inspection outcome.",
+        "field": "items_inspected",
+        "next_step": "violations_found"
+    },
+    {
+        "id": "violations_found",
+        "message": "**[CBP INSPECTION AI]**\n\nWere any violations, undeclared items, or contraband found during the inspection?",
+        "field": "violations_found",
+        "next_step": "enforcement_action"
+    },
+    {
+        "id": "enforcement_action",
+        "message": "**[CBP INSPECTION AI]**\n\nWas any enforcement action taken? (e.g., fine, seizure, denial of entry, referral to other agency)",
+        "field": "enforcement_action",
+        "next_step": "officer_remarks"
+    },
+    {
+        "id": "officer_remarks",
+        "message": "**[CBP INSPECTION AI]**\n\nDo you have any remarks or observations from the inspecting officer?",
+        "field": "officer_remarks",
+        "next_step": "case_status"
+    },
+    {
+        "id": "case_status",
+        "message": "**[CBP INSPECTION AI]**\n\nWhat is the current status of the inspection case? (e.g., cleared, pending investigation, escalated)",
+        "field": "case_status",
+        "next_step": "additional_notes"
+    },
+    {
+        "id": "additional_notes",
+        "message": "**[CBP INSPECTION AI]**\n\nDo you have any additional notes or relevant information for this inspection record?",
+        "field": "additional_notes",
+        "next_step": "analysis"
+    }
+]

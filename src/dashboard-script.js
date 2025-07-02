@@ -90,7 +90,7 @@ function setupEventListeners() {
 // async function checkSystemStatus() {
 //     try {
 //         // Check Murder Agent
-//         const murderResponse = await fetch('http://localhost:5001/api/murder', {
+//         const murderResponse = await fetch('https://aijusticegrid.onrender.com/api/murder', {
 //             method: 'POST',
 //             headers: {
 //                 'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ function setupEventListeners() {
 //         });
 
 //         // Check Cyber Crime Agent
-//         const cyberResponse = await fetch('http://localhost:5001/api/cyber', {
+//         const cyberResponse = await fetch('https://aijusticegrid.onrender.com/api/cyber', {
 //             method: 'POST',
 //             headers: {
 //                 'Content-Type': 'application/json',

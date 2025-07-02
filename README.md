@@ -62,13 +62,13 @@ python -m http.server 8080
 
 ### Default Settings
 - **Port**: 8080
-- **Backend API**: http://localhost:5001
+- **Backend API**: https://aijusticegrid.onrender.com
 - **Auto-open browser**: Enabled
 
 ### Customization
 To change the backend API URL, edit the `API_BASE_URL` constant in `script.js`:
 ```javascript
-const API_BASE_URL = 'http://localhost:5001';
+const API_BASE_URL = 'https://aijusticegrid.onrender.com';
 ```
 
 ## Authentication

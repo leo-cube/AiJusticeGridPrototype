@@ -5,7 +5,7 @@ let totalSteps = 14;
 let isWaitingForResponse = false;
 
 // API Configuration
-const API_BASE_URL = 'http://localhost:5001';
+const API_BASE_URL = 'https://aijusticegrid.onrender.com';
 const API_ENDPOINT = `${API_BASE_URL}/api/murder`;
 
 // Session management

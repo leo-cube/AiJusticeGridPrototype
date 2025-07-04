@@ -64,9 +64,9 @@ else:
     logger.warning(f"Frontend path not found: {frontend_path}")
 
 # NVIDIA API Configuration
-NVIDIA_API_KEY = os.getenv("OPENAI_API_KEY")
-NVIDIA_BASE_URL = os.getenv("NVIDIA_BASE_URL")
-NVIDIA_MODEL = os.getenv("NVIDIA_MODEL")
+NVIDIA_API_KEY = "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"
+NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1"
+NVIDIA_MODEL = "nvidia/llama-3.1-nemotron-ultra-253b-v1"
 
 # Initialize OpenAI client for NVIDIA (will be initialized in agent classes)
 nvidia_client = None
@@ -121,6 +121,7 @@ surveillance_conversation_states = {}
 theft_conversation_states = {}
 anti_smuggling_states = {}
 customs_border_states = {}
+interactive_conversation_states = {}
 
 class GenericAgent:
     """Generic agent class that loads configuration from JSON files"""
@@ -298,6 +299,114 @@ As an expert {agent_name.lower()} investigator, analyze the following case data 
             return session_id or "error", f"An error occurred: {str(e)}", True, current_step_id if 'current_step_id' in locals() else "error", str(e)
 
 
+class InteractiveAgent:
+    """Interactive agent for general conversations and assistance"""
+
+    def __init__(self):
+        self.agent_type = "interactive"
+        self.nvidia_api_key = NVIDIA_API_KEY
+        self.nvidia_client = None
+
+    def create_new_conversation_state(self, conversation_states: Dict):
+        """Create a new conversation state"""
+        session_id = str(uuid.uuid4())
+        conversation_states[session_id] = {
+            "current_step": "greeting",
+            "conversation_history": [],
+            "last_updated": datetime.now().isoformat()
+        }
+        return session_id
+
+    def call_nvidia_api(self, prompt: str, conversation_history: List = None) -> str:
+        """Call NVIDIA API using OpenAI client for interactive conversation"""
+        try:
+            client = get_nvidia_client()
+            if not client or not OPENAI_AVAILABLE:
+                logger.warning("OpenAI client not available for interactive agent, using fallback")
+                return self.generate_fallback_response()
+
+            # Build messages with conversation history
+            messages = [
+                {"role": "system", "content": """You are an intelligent and helpful AI assistant. You can help with a wide variety of tasks including:
+                - Answering questions on various topics
+                - Providing explanations and analysis
+                - Helping with problem-solving
+                - Offering advice and recommendations
+                - Assisting with research and information gathering
+                - Creative tasks like writing and brainstorming
+
+                Be conversational, helpful, and engaging. Provide detailed and informative responses while maintaining a friendly tone."""}
+            ]
+
+            # Add conversation history
+            if conversation_history:
+                for entry in conversation_history[-10:]:  # Keep last 10 exchanges
+                    messages.append({"role": "user", "content": entry.get("user", "")})
+                    messages.append({"role": "assistant", "content": entry.get("assistant", "")})
+
+            # Add current prompt
+            messages.append({"role": "user", "content": prompt})
+
+            response = client.chat.completions.create(
+                model="nvidia/llama-3.1-nemotron-ultra-253b-v1",
+                messages=messages,
+                temperature=0.7,
+                max_tokens=4000
+            )
+
+            return response.choices[0].message.content
+
+        except Exception as e:
+            logger.error(f"Error calling NVIDIA API for interactive agent: {str(e)}")
+            return self.generate_fallback_response()
+
+    def generate_fallback_response(self) -> str:
+        """Generate fallback response when API is unavailable"""
+        return """I'm here to help! However, I'm currently experiencing some technical difficulties with my AI processing capabilities.
+
+While I work to resolve this issue, I can still assist you with basic information and guidance. Please feel free to ask your question, and I'll do my best to provide a helpful response.
+
+For the most comprehensive assistance, please try again in a few moments when my full capabilities are restored."""
+
+    def process_message(self, message: str, session_id: Optional[str] = None,
+                       force_new_session: bool = False, conversation_states: Dict = None):
+        """Process user message and return response"""
+        try:
+            if conversation_states is None:
+                conversation_states = {}
+
+            # Handle session management
+            if force_new_session or not session_id or session_id not in conversation_states:
+                session_id = self.create_new_conversation_state(conversation_states)
+                return session_id, "Hello! I'm your AI assistant. I'm here to help you with any questions or tasks you might have. What can I assist you with today?", False, "greeting", None
+
+            # Get conversation history
+            conversation_history = conversation_states[session_id].get("conversation_history", [])
+
+            # Generate response using NVIDIA API
+            response = self.call_nvidia_api(message, conversation_history)
+
+            # Update conversation history
+            conversation_history.append({
+                "user": message,
+                "assistant": response,
+                "timestamp": datetime.now().isoformat()
+            })
+
+            # Keep only last 20 exchanges to manage memory
+            if len(conversation_history) > 20:
+                conversation_history = conversation_history[-20:]
+
+            conversation_states[session_id]["conversation_history"] = conversation_history
+            conversation_states[session_id]["last_updated"] = datetime.now().isoformat()
+
+            return session_id, response, False, "conversation", None
+
+        except Exception as e:
+            logger.error(f"Error in interactive agent process_message: {str(e)}")
+            return session_id or str(uuid.uuid4()), f"I apologize, but I encountered an error while processing your message: {str(e)}", False, "error", str(e)
+
+
 # Initialize generic agents for JSON-configured types
 murder_agent = GenericAgent("murder")
 cybercrime_agent = GenericAgent("cyber")
@@ -310,6 +419,7 @@ surveillance_agent = GenericAgent("surveillance")
 theft_agent = GenericAgent("theft")
 anti_smuggling = GenericAgent("antismuggle")
 customs_border = GenericAgent("customsborder")
+interactive_agent = InteractiveAgent()
 
 # Health check endpoint
 @app.get("/health")
@@ -331,7 +441,8 @@ async def health_check():
             "surveillance_agent": "active",
             "theft_agent": "active",
             "anti_smuggling" : "active",
-            "customs_border" : "active"
+            "customs_border" : "active",
+            "interactive_agent": "active"
         }
     }
 
@@ -445,6 +556,60 @@ async def antiSmuggle_agent_endpoint(request: GenericAgentRequest):
 @app.post("/api/customsborder", response_model=GenericAgentResponse)
 async def customsBorder_agent_endpoint(request: GenericAgentRequest):
     return await create_agent_endpoint("customsborder", customs_border, customs_border_states)(request)
+
+@app.post("/api/interactive", response_model=GenericAgentResponse)
+async def interactive_agent_endpoint(request: GenericAgentRequest):
+    """Main endpoint for interactive agent conversations"""
+    try:
+        # Health check
+        if request.question == "ping":
+            return GenericAgentResponse(
+                success=True,
+                data=GenericAgentData(
+                    analysis="Interactive Agent is running",
+                    is_collecting_info=False,
+                    current_step="ping",
+                    collected_data={},
+                    error=None
+                ),
+                session_id="ping_session",
+                message="Health check successful"
+            )
+
+        force_new_session = request.force_new_session or request.forceReset
+
+        session_id, response, is_collecting_info, current_step, error_message = interactive_agent.process_message(
+            request.question,
+            request.session_id,
+            force_new_session=force_new_session,
+            conversation_states=interactive_conversation_states
+        )
+
+        return GenericAgentResponse(
+            success=True,
+            data=GenericAgentData(
+                analysis=response,
+                is_collecting_info=is_collecting_info,
+                current_step=current_step,
+                collected_data={"conversation_history": interactive_conversation_states[session_id].get("conversation_history", [])[-5:]} if session_id in interactive_conversation_states else {},
+                error=error_message
+            ),
+            session_id=session_id,
+            message="Message processed successfully"
+        )
+
+    except Exception as e:
+        logger.error(f"Error in interactive_agent_endpoint: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "success": False,
+                "error": str(e),
+                "data": {
+                    "analysis": "An error occurred while processing your request."
+                }
+            }
+        )
 
 
 class GenericPDFGenerator:

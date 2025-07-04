@@ -160,6 +160,8 @@ function selectAgent(agentType) {
             window.location.href = 'surveillance.html';
         } else if (agentType === 'theft') {
             window.location.href = 'theft.html';
+        } else if (agentType === 'interactive') {
+            window.location.href = 'interactive.html';
         }
     }, 2000);
 }

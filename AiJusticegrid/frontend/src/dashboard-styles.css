@@ -297,6 +297,10 @@ body {
     background: linear-gradient(135deg, #343a40, #23272b);
 }
 
+.agent-icon.interactive {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
 .agent-info {
     flex: 1;
     position: relative;

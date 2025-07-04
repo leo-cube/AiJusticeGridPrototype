@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .session-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AiJusticeGrid Session Debug</h1>
+        
+        <div class="session-info" id="sessionStatus">
+            <h3>Session Status</h3>
+            <p id="statusText">Checking...</p>
+        </div>
+        
+        <div class="session-info">
+            <h3>Session Data</h3>
+            <pre id="sessionData">Loading...</pre>
+        </div>
+        
+        <div>
+            <button onclick="checkSession()">Refresh Session</button>
+            <button onclick="createTestSession()">Create Test Session</button>
+            <button onclick="clearSession()">Clear Session</button>
+            <button onclick="goToLogin()">Go to Login</button>
+            <button onclick="goToDashboard()">Go to Dashboard</button>
+            <button onclick="goToInteractive()">Go to Interactive Agent</button>
+        </div>
+        
+        <div class="session-info">
+            <h3>Instructions</h3>
+            <p>1. If no session exists, click "Go to Login" and log in with:</p>
+            <ul>
+                <li><strong>Username:</strong> admin@police.gov</li>
+                <li><strong>Password:</strong> policecrime@586$gov</li>
+            </ul>
+            <p>2. After logging in, come back here and check the session</p>
+            <p>3. Then try "Go to Interactive Agent"</p>
+        </div>
+    </div>
+
+    <script>
+        const SESSION_KEY = 'aiJusticeGrid_session';
+        
+        function getSession() {
+            try {
+                const sessionData = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
+                if (sessionData) {
+                    const session = JSON.parse(sessionData);
+                    if (session.expiresAt && Date.now() < session.expiresAt) {
+                        return session;
+                    }
+                }
+            } catch (error) {
+                console.error('Error reading session:', error);
+            }
+            return null;
+        }
+        
+        function checkSession() {
+            const session = getSession();
+            const statusDiv = document.getElementById('sessionStatus');
+            const statusText = document.getElementById('statusText');
+            const sessionDataPre = document.getElementById('sessionData');
+            
+            if (session && session.isValid) {
+                statusDiv.className = 'session-info success';
+                statusText.textContent = '✅ Valid session found!';
+                sessionDataPre.textContent = JSON.stringify(session, null, 2);
+            } else {
+                statusDiv.className = 'session-info error';
+                statusText.textContent = '❌ No valid session found';
+                sessionDataPre.textContent = session ? JSON.stringify(session, null, 2) : 'No session data';
+            }
+        }
+        
+        function createTestSession() {
+            const session = {
+                username: 'admin@police.gov',
+                loginTime: Date.now(),
+                expiresAt: Date.now() + (24 * 60 * 60 * 1000), // 24 hours
+                rememberMe: true,
+                isValid: true
+            };
+            
+            localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+            alert('Test session created!');
+            checkSession();
+        }
+        
+        function clearSession() {
+            localStorage.removeItem(SESSION_KEY);
+            sessionStorage.removeItem(SESSION_KEY);
+            alert('Session cleared!');
+            checkSession();
+        }
+        
+        function goToLogin() {
+            window.location.href = 'login.html';
+        }
+        
+        function goToDashboard() {
+            window.location.href = 'dashboard.html';
+        }
+        
+        function goToInteractive() {
+            window.location.href = 'interactive.html';
+        }
+        
+        // Check session on page load
+        document.addEventListener('DOMContentLoaded', checkSession);
+    </script>
+</body>
+</html>
